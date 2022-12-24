@@ -89,7 +89,23 @@ public class LushaInventoryBlockEntity extends LushaTestBlockEntity {
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return this.stackHandlerLazyOptional.cast();
+            return LazyOptional.of(() -> new ItemStackHandler(2) {
+                @NotNull
+                @Override
+                public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+                    return LushaInventoryBlockEntity.this.stackHandler.insertItem(slot, stack, simulate);
+                }
+
+                @NotNull
+                @Override
+                public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                    if (slot == 0) {
+                        return ItemStack.EMPTY;
+                    }
+
+                    return LushaInventoryBlockEntity.this.stackHandler.extractItem(slot, amount, simulate);
+                }
+            }).cast();
         }
 
         return super.getCapability(cap, side);
