@@ -2,7 +2,6 @@ package xyz.l7ssha.lushatest.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.screens.SoundOptionsScreen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -13,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.l7ssha.lushatest.LushaTestMod;
 import xyz.l7ssha.lushatest.container.TestBlockContainer;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
+import xyz.l7ssha.lushatest.utils.Utils;
 
 public class TestBlockContainerScreen extends AbstractContainerScreen<TestBlockContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(LushaTestMod.MOD_ID,
@@ -29,10 +29,11 @@ public class TestBlockContainerScreen extends AbstractContainerScreen<TestBlockC
         super.render(stack, mouseX, mouseY, partialTicks);
 
         final var energyStored = this.menu.getContainerData().get(0);
-        final var scaledHeight = (int) mapNumber(energyStored, 0, TestTileEntity.ENERGY_STORAGE_MAX, 0, 62);
+        final var scaledHeight = (int) Utils.mapNumber(energyStored, 0, TestTileEntity.ENERGY_STORAGE_MAX, 0, 62);
 
         bindTexture();
         blit(stack, this.leftPos + 118, this.topPos + 75 - scaledHeight, 176, 62 - scaledHeight, 30, scaledHeight);
+
         this.font.draw(stack, new TextComponent(energyStored + ""), this.leftPos + 118, this.topPos + 78, 0x404040);
     }
 
@@ -47,9 +48,5 @@ public class TestBlockContainerScreen extends AbstractContainerScreen<TestBlockC
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, TEXTURE);
-    }
-
-    protected static double mapNumber(double value, double rangeMin, double rangeMax, double resultMin, double resultMax) {
-        return (value - rangeMin) / (rangeMax - rangeMin) * (resultMax - resultMin) + resultMin;
     }
 }

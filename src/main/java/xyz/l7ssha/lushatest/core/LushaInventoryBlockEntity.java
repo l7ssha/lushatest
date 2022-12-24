@@ -1,16 +1,19 @@
 package xyz.l7ssha.lushatest.core;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 public class LushaInventoryBlockEntity extends LushaTestBlockEntity {
     protected final static String INVENTORY_TAG = "inventory";
@@ -22,12 +25,12 @@ public class LushaInventoryBlockEntity extends LushaTestBlockEntity {
     public LushaInventoryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int size) {
         super(type, pos, state);
 
-        this.stackHandler = createStackHandler();
+        this.stackHandler = createStackHandler(Map.of(0, 1));
         this.stackHandler.setSize(size);
         this.stackHandlerLazyOptional = LazyOptional.of(() -> stackHandler);
     }
 
-    protected ItemStackHandler createStackHandler() {
+    protected ItemStackHandler createStackHandler(final Map<Integer, Integer> slotLimit) {
         return new ItemStackHandler() {
             @NotNull
             @Override
@@ -47,6 +50,13 @@ public class LushaInventoryBlockEntity extends LushaTestBlockEntity {
                 var returnStack = super.extractItem(slot, amount, simulate);
                 LushaInventoryBlockEntity.this.updateBlockEntity();
                 return returnStack;
+            }
+
+            @Override
+            protected int getStackLimit(int slot, @NotNull ItemStack stack) {
+                final var slotLimitForSlot = slotLimit.getOrDefault(slot, stack.getMaxStackSize());
+
+                return Math.min(slotLimitForSlot, stack.getMaxStackSize());
             }
         };
     }
@@ -77,11 +87,11 @@ public class LushaInventoryBlockEntity extends LushaTestBlockEntity {
 
     @NotNull
     @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return this.stackHandlerLazyOptional.cast();
         }
 
-        return super.getCapability(cap);
+        return super.getCapability(cap, side);
     }
 }
