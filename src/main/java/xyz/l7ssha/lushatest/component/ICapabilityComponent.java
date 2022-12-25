@@ -7,13 +7,13 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
 public interface ICapabilityComponent<T> {
-    public Capability<T> getType();
+    Capability<T> getType();
 
-    public LazyOptional<T> getCapability(@Nullable Direction side);
+    LazyOptional<T> getCapability(@Nullable Direction side);
 
-    public T getComponent();
+    T getComponent();
 
-    public void saveAdditional(CompoundTag tag);
+    void saveAdditional(CompoundTag tag);
 
-    public void load(CompoundTag tag);
+    void load(CompoundTag tag);
 }

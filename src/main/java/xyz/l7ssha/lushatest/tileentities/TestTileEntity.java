@@ -15,6 +15,7 @@ import xyz.l7ssha.lushatest.component.energy.EnergyCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.core.LushaComponentTickerBlockEntity;
 import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
+import xyz.l7ssha.lushatest.utils.StorageComponentStackHandlerBuilder;
 
 import java.util.Map;
 
@@ -30,7 +31,16 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
         super(BlockEntityRegistry.TEST_BLOCK_ENTITY.get(), pos, state);
 
         this.addComponent(new EnergyCapabilityComponent<TestTileEntity>(ENERGY_STORAGE_MAX));
-        this.addComponent(new StorageCapabilityComponent(2, this));
+        this.addComponent(
+                new StorageCapabilityComponent(
+                        new StorageComponentStackHandlerBuilder()
+                                .setSize(2)
+                                .addSlot(0, new StorageComponentStackHandlerBuilder.SlotConfigBuilder().setSlotLimit(1).setAllowExtract(false).setAllowInsert(false))
+                                .addSlot(1, new StorageComponentStackHandlerBuilder.SlotConfigBuilder().setSlotLimit(64).setAllowExtract(true).setAllowInsert(false))
+                                .build(),
+                        this
+                )
+        );
     }
 
     public IEnergyStorage getEnergyStorage() {
