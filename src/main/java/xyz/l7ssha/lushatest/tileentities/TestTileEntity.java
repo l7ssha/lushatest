@@ -42,7 +42,7 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
     }
 
     @Override
-    public void tick(Level world, @NotNull BlockPos blockPos, @NotNull BlockState blockState, @NotNull TestTileEntity tile) {
+    public void tick(@NotNull Level world, @NotNull BlockPos blockPos, @NotNull BlockState blockState, @NotNull TestTileEntity tile) {
         super.tick(world, blockPos, blockState, tile);
 
         if (world.isClientSide()) {
@@ -61,14 +61,16 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
             return;
         }
 
-        if (this.canProcess(inputSlotStack, outputSlotStack, processingCost)) {
-            this.getEnergyStorage().extractEnergy(processingCost, false);
-
-            var stackToInsert = this.getStackHandler().getStackInSlot(0).copy();
-            stackToInsert.setCount(1);
-
-            this.getStackHandler().insertItem(1, stackToInsert, false);
+        if (!this.canProcess(inputSlotStack, outputSlotStack, processingCost)) {
+            return;
         }
+
+        this.getEnergyStorage().extractEnergy(processingCost, false);
+
+        var stackToInsert = this.getStackHandler().getStackInSlot(0).copy();
+        stackToInsert.setCount(1);
+
+        this.getStackHandler().insertItem(1, stackToInsert, false);
     }
 
     protected boolean canProcess(ItemStack inputSlotStack, ItemStack outputSlotStack, int processingCost) {

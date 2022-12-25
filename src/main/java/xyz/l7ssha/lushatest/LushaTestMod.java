@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -24,7 +23,7 @@ public class LushaTestMod
     public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab(MOD_ID + "_tab") {
         @Override
         public @NotNull ItemStack makeIcon() {
-            return new ItemStack(Items.IRON_BARS);
+            return new ItemStack(BlockRegistry.TEST_BLOCK.get());
         }
     };
 
@@ -32,12 +31,14 @@ public class LushaTestMod
 
     public LushaTestMod()
     {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        final var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ItemRegistry.setUp();
-        BlockRegistry.setUp();
-        BlockEntityRegistry.setUp();
-        ContainerRegistry.setUp();
+        modEventBus.addListener(this::clientSetup);
+
+        ItemRegistry.setUp(modEventBus);
+        BlockRegistry.setUp(modEventBus);
+        BlockEntityRegistry.setUp(modEventBus);
+        ContainerRegistry.setUp(modEventBus);
     }
 
     public void clientSetup(final FMLClientSetupEvent event) {

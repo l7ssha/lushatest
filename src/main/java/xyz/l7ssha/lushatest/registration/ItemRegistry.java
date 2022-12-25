@@ -1,7 +1,7 @@
 package xyz.l7ssha.lushatest.registration;
 
 import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -13,8 +13,7 @@ public class ItemRegistry {
 
     public static final RegistryObject<Item> TEST_ITEM = ITEMS_REGISTRY.register("test_item", TestItem::new);
 
-    public static void setUp() {
-        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    public static void setUp(IEventBus modEventBus) {
         ITEMS_REGISTRY.register(modEventBus);
     }
 }

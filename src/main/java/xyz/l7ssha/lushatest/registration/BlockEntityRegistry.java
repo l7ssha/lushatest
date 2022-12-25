@@ -1,7 +1,7 @@
 package xyz.l7ssha.lushatest.registration;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -14,8 +14,7 @@ public class BlockEntityRegistry {
     public static final RegistryObject<BlockEntityType<TestTileEntity>> TEST_BLOCK_ENTITY = BLOCK_ENTITY_REGISTRY.register("test_block",
             () -> BlockEntityType.Builder.of(TestTileEntity::new, BlockRegistry.TEST_BLOCK.get()).build(null));
 
-    public static void setUp() {
-        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    public static void setUp(IEventBus modEventBus) {
         BLOCK_ENTITY_REGISTRY.register(modEventBus);
     }
 }
