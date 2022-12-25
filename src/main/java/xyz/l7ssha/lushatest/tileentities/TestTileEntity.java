@@ -79,4 +79,14 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
                 && inputSlotStack.getCount() > 0
                 && outputSlotStack.getCount() < 64;
     }
+
+    public int getCurrentProgressPercentage() {
+        var processingCost = processingMap.get(this.getStackHandler().getStackInSlot(0).getItem());
+        if (processingCost == null) {
+            return 0;
+        }
+
+        final var calculatedPercentage = (int) ((double) this.getEnergyStorage().getEnergyStored() / (double) processingCost * 100);
+        return Math.min(100, calculatedPercentage);
+    }
 }

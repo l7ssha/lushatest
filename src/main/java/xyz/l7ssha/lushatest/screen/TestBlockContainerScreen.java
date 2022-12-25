@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -28,13 +27,10 @@ public class TestBlockContainerScreen extends AbstractContainerScreen<TestBlockC
     public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         super.render(stack, mouseX, mouseY, partialTicks);
 
-        final var energyStored = this.menu.getContainerData().get(0);
-        final var scaledHeight = (int) Utils.mapNumber(energyStored, 0, TestTileEntity.ENERGY_STORAGE_MAX, 0, 62);
-
-        bindTexture();
-        blit(stack, this.leftPos + 118, this.topPos + 75 - scaledHeight, 176, 62 - scaledHeight, 30, scaledHeight);
-
-        this.font.draw(stack, new TextComponent(energyStored + ""), this.leftPos + 118, this.topPos + 78, 0x404040);
+        final var currentProgress = this.menu.getContainerData().get(1);
+        if (mouseX > this.leftPos + 57 && mouseX < this.leftPos + 57 + 100 && mouseY > this.topPos + 36 && mouseY < this.topPos + 36 + 17) {
+            this.drawTextWithShadow(stack, currentProgress + "%", mouseX + 5, mouseY + 5);
+        }
     }
 
     @Override
@@ -42,11 +38,27 @@ public class TestBlockContainerScreen extends AbstractContainerScreen<TestBlockC
         renderBackground(stack);
         bindTexture();
         blit(stack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+
+        final var energyStored = this.menu.getContainerData().get(0);
+        final var scaledEnergyStored = (int) Utils.mapNumber(energyStored, 0, TestTileEntity.ENERGY_STORAGE_MAX, 0, 62);
+
+        bindTexture();
+        blit(stack, this.leftPos + 137, this.topPos + 75 - scaledEnergyStored, 176, 62 - scaledEnergyStored, 30, scaledEnergyStored);
+
+        final var currentProgress = this.menu.getContainerData().get(1);
+        final var scaledCurrentProgress = (int) Utils.mapNumber(currentProgress, 0, 100, 0, 28);
+        bindTexture();
+        blit(stack, this.leftPos + 57, this.topPos + 36, 177,63, scaledCurrentProgress, 17);
     }
 
-    public static void bindTexture() {
+    protected void bindTexture() {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, TEXTURE);
+    }
+
+    protected void drawTextWithShadow(PoseStack poseStack, String text, int posX, int posY) {
+        this.font.draw(poseStack, text, posX + 1, posY + 1, 0x000000);
+        this.font.draw(poseStack, text, posX, posY, 0xffffff);
     }
 }

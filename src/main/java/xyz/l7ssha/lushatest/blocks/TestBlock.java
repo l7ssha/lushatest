@@ -1,14 +1,12 @@
 package xyz.l7ssha.lushatest.blocks;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -17,7 +15,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.extensions.IForgeBlock;
 import net.minecraftforge.network.NetworkHooks;
@@ -26,8 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import xyz.l7ssha.lushatest.container.TestBlockContainer;
 import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
-
-import java.util.List;
 
 final public class TestBlock extends Block implements EntityBlock, IForgeBlock {
     public TestBlock() {

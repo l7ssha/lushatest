@@ -19,7 +19,7 @@ public class TestBlockContainer extends LushaTestContainerMenu {
     private final ContainerData containerData;
 
     public TestBlockContainer(int id, Inventory playerInv) {
-        this(id, playerInv, new ItemStackHandler(2), BlockPos.ZERO, new SimpleContainerData(1));
+        this(id, playerInv, new ItemStackHandler(2), BlockPos.ZERO, new SimpleContainerData(2));
     }
 
     public TestBlockContainer(int id, @NotNull Inventory playerInv, IItemHandler slots, BlockPos pos, ContainerData containerData) {
@@ -27,12 +27,13 @@ public class TestBlockContainer extends LushaTestContainerMenu {
         this.containerLevelAccess = ContainerLevelAccess.create(playerInv.player.level, pos);
         this.containerData = containerData;
 
-        addSlot(new ItemRestrictedSlot(slots, 0, 44, 36, TestTileEntity.processingMap.keySet().stream().toList()));
-        addSlot(new ReadonlySlot(slots, 1, 80, 36));
+        addSlot(new ItemRestrictedSlot(slots, 0, 26, 36, TestTileEntity.processingMap.keySet().stream().toList()));
+        addSlot(new ReadonlySlot(slots, 1, 98, 36));
 
         addPlayerInv(playerInv);
 
         addDataSlot(DataSlot.forContainer(containerData, 0));
+        addDataSlot(DataSlot.forContainer(containerData, 1));
     }
 
     public ContainerData getContainerData() {
