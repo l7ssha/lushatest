@@ -1,29 +1,24 @@
 package xyz.l7ssha.lushatest.tileentities;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import xyz.l7ssha.lushatest.core.LushaInventoryBlockEntity;
+import xyz.l7ssha.lushatest.component.energy.EnergyCapabilityComponent;
+import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
+import xyz.l7ssha.lushatest.core.LushaComponentTickerBlockEntity;
 import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
 
 import java.util.Map;
 
-public class TestTileEntity extends LushaInventoryBlockEntity implements BlockEntityTicker<TestTileEntity> {
-
-    private final IEnergyStorage energyStorage;
-    private final LazyOptional<IEnergyStorage> energyStorageLazyOptional;
+public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEntity> {
 
     public final static int ENERGY_STORAGE_MAX = 2_147_483_647; // Integer.MAX_VALUE;
 
@@ -32,50 +27,34 @@ public class TestTileEntity extends LushaInventoryBlockEntity implements BlockEn
     );
 
     public TestTileEntity(BlockPos pos, BlockState state) {
-        super(BlockEntityRegistry.TEST_BLOCK_ENTITY.get(), pos, state, 2);
+        super(BlockEntityRegistry.TEST_BLOCK_ENTITY.get(), pos, state);
 
-        this.energyStorage = new EnergyStorage(ENERGY_STORAGE_MAX);
-        this.energyStorageLazyOptional = LazyOptional.of(() -> this.energyStorage);
+        this.addComponent(new EnergyCapabilityComponent<TestTileEntity>(ENERGY_STORAGE_MAX));
+        this.addComponent(new StorageCapabilityComponent(2, this));
     }
 
     public IEnergyStorage getEnergyStorage() {
-        return this.energyStorage;
+        return this.getComponent(CapabilityEnergy.ENERGY).getComponent();
     }
 
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityEnergy.ENERGY) {
-            return this.energyStorageLazyOptional.cast();
-        }
-
-        return super.getCapability(cap, side);
+    public IItemHandler getStackHandler() {
+        return this.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).getComponent();
     }
 
     @Override
     public void tick(Level world, @NotNull BlockPos blockPos, @NotNull BlockState blockState, @NotNull TestTileEntity tile) {
+        super.tick(world, blockPos, blockState, tile);
+
         if (world.isClientSide()) {
             return;
         }
 
-        for(final var direction: Direction.values()) {
-            final var blockEntity = world.getBlockEntity(this.worldPosition.relative(direction));
-            if (blockEntity == null) {
-                continue;
-            }
+        processMachine();
+    }
 
-            blockEntity.getCapability(CapabilityEnergy.ENERGY, direction.getOpposite()).ifPresent(storage -> {
-                if(!storage.canExtract()) {
-                    return;
-                }
-
-                final var extracted = storage.extractEnergy(Integer.MAX_VALUE / 256, false);
-                TestTileEntity.this.energyStorage.receiveEnergy(extracted, false);
-            });
-        }
-
-        final var inputSlotStack = stackHandler.getStackInSlot(0);
-        final var outputSlotStack = stackHandler.getStackInSlot(1);
+    protected void processMachine() {
+        final var inputSlotStack = this.getStackHandler().getStackInSlot(0);
+        final var outputSlotStack = this.getStackHandler().getStackInSlot(1);
 
         final var processingCost = processingMap.get(inputSlotStack.getItem());
         if (processingCost == null) {

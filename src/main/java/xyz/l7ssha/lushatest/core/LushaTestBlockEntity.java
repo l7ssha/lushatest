@@ -2,8 +2,6 @@ package xyz.l7ssha.lushatest.core;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,5 +15,13 @@ public class LushaTestBlockEntity extends BlockEntity {
     @Override
     public @NotNull CompoundTag getUpdateTag() {
         return serializeNBT();
+    }
+
+    public void updateBlockEntity() {
+        requestModelDataUpdate();
+        setChanged();
+        if (level != null) {
+            level.setBlockAndUpdate(getBlockPos(), getBlockState());
+        }
     }
 }
