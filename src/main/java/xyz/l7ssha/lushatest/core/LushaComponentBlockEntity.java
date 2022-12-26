@@ -14,6 +14,7 @@ import xyz.l7ssha.lushatest.component.ICapabilityComponent;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class LushaComponentBlockEntity extends LushaTestBlockEntity {
     protected Map<Capability<?>, ICapabilityComponent<?>> components;
@@ -24,8 +25,8 @@ public class LushaComponentBlockEntity extends LushaTestBlockEntity {
         this.components = new HashMap<>();
     }
 
-    public <T> ICapabilityComponent<T> getComponent(Capability<T> cap) {
-        return (ICapabilityComponent<T>) components.get(cap);
+    public <T> Optional<ICapabilityComponent<T>> getComponent(Capability<T> cap) {
+        return Optional.ofNullable((ICapabilityComponent<T>) components.get(cap));
     }
 
     public Collection<ICapabilityComponent<?>> getComponents() {

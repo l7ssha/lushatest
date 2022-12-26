@@ -29,6 +29,10 @@ public class StorageCapabilityComponent implements ICapabilityComponent<IItemHan
         this.stackHandlerLazyOptional = LazyOptional.of(stackHandlerProvider::getMainHandler);
     }
 
+    public StackHandlerProvider<TestTileEntity> getStackHandlerProvider() {
+        return stackHandlerProvider;
+    }
+
     @Override
     public Capability<IItemHandler> getType() {
         return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;

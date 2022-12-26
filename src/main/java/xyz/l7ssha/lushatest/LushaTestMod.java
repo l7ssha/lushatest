@@ -4,11 +4,15 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
+import xyz.l7ssha.lushatest.commands.ConfigCommand;
 import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
 import xyz.l7ssha.lushatest.registration.BlockRegistry;
 import xyz.l7ssha.lushatest.registration.ContainerRegistry;
@@ -16,6 +20,7 @@ import xyz.l7ssha.lushatest.registration.ItemRegistry;
 import xyz.l7ssha.lushatest.screen.TestBlockContainerScreen;
 
 @Mod(LushaTestMod.MOD_ID)
+@Mod.EventBusSubscriber(modid = LushaTestMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class LushaTestMod
 {
     public static final String MOD_ID = "lushatest";
@@ -35,6 +40,8 @@ public class LushaTestMod
 
         modEventBus.addListener(this::clientSetup);
 
+        MinecraftForge.EVENT_BUS.register(this);
+
         ItemRegistry.setUp(modEventBus);
         BlockRegistry.setUp(modEventBus);
         BlockEntityRegistry.setUp(modEventBus);
@@ -43,5 +50,10 @@ public class LushaTestMod
 
     public void clientSetup(final FMLClientSetupEvent event) {
         MenuScreens.register(ContainerRegistry.TEST_BLOCK_CONTAINER.get(), TestBlockContainerScreen::new);
+    }
+
+    @SubscribeEvent
+    public static void registerCommands(RegisterCommandsEvent event){
+        ConfigCommand.register(event.getDispatcher());
     }
 }

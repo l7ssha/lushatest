@@ -44,11 +44,11 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
     }
 
     public IEnergyStorage getEnergyStorage() {
-        return this.getComponent(CapabilityEnergy.ENERGY).getComponent();
+        return this.getComponent(CapabilityEnergy.ENERGY).get().getComponent();
     }
 
     public IItemHandler getStackHandler() {
-        return this.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).getComponent();
+        return this.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).get().getComponent();
     }
 
     @Override
@@ -89,7 +89,7 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
         return energyStorage.getEnergyStored() > processingCost
                 && (inputSlotStack.getItem().equals(outputSlotStack.getItem()) || outputSlotStack.getItem().equals(Items.AIR))
                 && inputSlotStack.getCount() > 0
-                && outputSlotStack.getCount() < 64;
+                && outputSlotStack.getCount() < this.getStackHandler().getSlotLimit(1);
     }
 
     public int getCurrentProgressPercentage() {

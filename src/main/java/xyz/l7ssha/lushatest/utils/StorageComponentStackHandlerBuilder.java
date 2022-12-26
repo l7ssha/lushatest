@@ -20,8 +20,8 @@ public final class StorageComponentStackHandlerBuilder {
 
         public SlotConfigBuilder() {
             this.slotLimit = 64;
-            this.allowInsert = true;
-            this.allowExtract = true;
+            this.allowInsert = false;
+            this.allowExtract = false;
         }
 
         public int getSlotLimit() {
