@@ -1,6 +1,7 @@
 package xyz.l7ssha.lushatest.component.storage;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -9,6 +10,14 @@ import org.jetbrains.annotations.NotNull;
 import xyz.l7ssha.lushatest.core.LushaTestBlockEntity;
 
 public class StackHandlerProvider<T extends LushaTestBlockEntity> {
+    protected final static String INVENTORY_TAG = "inventory_capability_component_inventory";
+    protected final static String CONFIG_SIZE = "size";
+    protected final static String CONFIG_SLOTS_NUMBER = "slotsNumber";
+    protected final static String CONFIG_STACK_LIMIT = "stackLimit";
+    protected final static String CONFIG_ALLOW_INSERT = "allowInsert";
+    protected final static String CONFIG_ALLOW_EXTRACT = "allowExtract";
+    protected final static String CONFIG_SLOT_N_PATTERN = "slot[%s]";
+    protected final static String CONFIG_HANDLER_CONFIGURATION_STACK = "stack_handler_configuration";
 
     private StackHandlerConfiguration stackHandlerConfiguration;
 
@@ -27,9 +36,8 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
         return stackHandlerConfiguration;
     }
 
-    public StackHandlerProvider<T> setStackHandlerConfiguration(StackHandlerConfiguration stackHandlerConfiguration) {
+    public void setStackHandlerConfiguration(StackHandlerConfiguration stackHandlerConfiguration) {
         this.stackHandlerConfiguration = stackHandlerConfiguration;
-        return this;
     }
 
     public LazyOptional<IItemHandler> getHandlerForSide(Direction direction) {
@@ -62,6 +70,49 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
                 return StackHandlerProvider.this.stackHandler.extractItem(slot, amount, simulate);
             }
         }).cast();
+    }
+
+    void saveAdditional(CompoundTag tag) {
+        final var configurationTag = new CompoundTag();
+        configurationTag.putInt(CONFIG_SIZE, this.getStackHandlerConfiguration().getSize());
+        configurationTag.putInt(CONFIG_SLOTS_NUMBER, this.getStackHandlerConfiguration().getSlotConfiguration().size());
+
+        for (final var slotConfig: this.getStackHandlerConfiguration().getSlotConfiguration().entrySet()) {
+            final var slotConfigTag = new CompoundTag();
+
+            slotConfigTag.putInt(CONFIG_STACK_LIMIT, slotConfig.getValue().getSlotLimit());
+            slotConfigTag.putBoolean(CONFIG_ALLOW_INSERT, slotConfig.getValue().isAllowInsert());
+            slotConfigTag.putBoolean(CONFIG_ALLOW_EXTRACT, slotConfig.getValue().isAllowExtract());
+
+            configurationTag.put(CONFIG_SLOT_N_PATTERN.formatted(slotConfig.getKey()), slotConfigTag);
+        }
+
+        tag.put(CONFIG_HANDLER_CONFIGURATION_STACK, configurationTag);
+
+        tag.put(INVENTORY_TAG, getMainHandler().serializeNBT());
+    }
+
+    void load(CompoundTag tag) {
+        final var configurationTag = tag.getCompound(CONFIG_HANDLER_CONFIGURATION_STACK);
+
+        final var configBuilder = new StorageComponentStackHandlerBuilder();
+        configBuilder.setSize(configurationTag.getInt(CONFIG_SIZE));
+
+        final var slotsNumber = configurationTag.getInt(CONFIG_SLOTS_NUMBER);
+
+        for (var i = 0; i < slotsNumber; i++) {
+            final var slotTag = configurationTag.getCompound(CONFIG_SLOT_N_PATTERN.formatted(i));
+
+            configBuilder.addSlot(i, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(
+                    slotTag.getInt(CONFIG_STACK_LIMIT),
+                    slotTag.getBoolean(CONFIG_ALLOW_INSERT),
+                    slotTag.getBoolean(CONFIG_ALLOW_EXTRACT)
+            ));
+        }
+
+        this.setStackHandlerConfiguration(configBuilder.build());
+
+        this.getMainHandler().deserializeNBT(tag.getCompound(INVENTORY_TAG));
     }
 
     public ItemStackHandler getMainHandler() {

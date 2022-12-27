@@ -19,6 +19,8 @@ import xyz.l7ssha.lushatest.component.ICapabilityTicker;
 public class EnergyCapabilityComponent<T extends BlockEntity> implements ICapabilityComponent<IEnergyStorage>, ICapabilityTicker<T> {
     protected final static String ENERGY_TAG = "energy_capability_energy_stored";
 
+    protected final static int EXTRACT_MAX = Integer.MAX_VALUE / 256;
+
     private final IEnergyStorage energyStorage;
     private final LazyOptional<IEnergyStorage> energyStorageLazyOptional;
 
@@ -65,7 +67,7 @@ public class EnergyCapabilityComponent<T extends BlockEntity> implements ICapabi
                     return;
                 }
 
-                final var extracted = storage.extractEnergy(Integer.MAX_VALUE / 256, false);
+                final var extracted = storage.extractEnergy(EXTRACT_MAX, false);
                 EnergyCapabilityComponent.this.energyStorage.receiveEnergy(extracted, false);
             });
         }

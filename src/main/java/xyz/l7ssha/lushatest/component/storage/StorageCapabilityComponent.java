@@ -14,8 +14,6 @@ import xyz.l7ssha.lushatest.component.ICapabilityTileEntityComponent;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 
 public class StorageCapabilityComponent implements ICapabilityComponent<IItemHandler>, ICapabilityTileEntityComponent<TestTileEntity> {
-    protected final static String INVENTORY_TAG = "inventory_capability_component_inventory";
-
     protected final LazyOptional<ItemStackHandler> stackHandlerLazyOptional;
 
     protected final StackHandlerProvider<TestTileEntity> stackHandlerProvider;
@@ -50,12 +48,12 @@ public class StorageCapabilityComponent implements ICapabilityComponent<IItemHan
 
     @Override
     public void saveAdditional(@NotNull CompoundTag tag) {
-        tag.put(INVENTORY_TAG, stackHandlerProvider.getMainHandler().serializeNBT());
+        this.getStackHandlerProvider().saveAdditional(tag);
     }
 
     @Override
     public void load(@NotNull CompoundTag tag) {
-        this.stackHandlerProvider.getMainHandler().deserializeNBT(tag.getCompound(INVENTORY_TAG));
+        this.getStackHandlerProvider().load(tag);
     }
 
     @Override

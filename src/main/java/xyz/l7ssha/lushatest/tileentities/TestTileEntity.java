@@ -13,9 +13,9 @@ import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import xyz.l7ssha.lushatest.component.energy.EnergyCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
+import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
 import xyz.l7ssha.lushatest.core.LushaComponentTickerBlockEntity;
 import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
-import xyz.l7ssha.lushatest.utils.StorageComponentStackHandlerBuilder;
 
 import java.util.Map;
 
@@ -44,11 +44,11 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
     }
 
     public IEnergyStorage getEnergyStorage() {
-        return this.getComponent(CapabilityEnergy.ENERGY).get().getComponent();
+        return this.getComponent(CapabilityEnergy.ENERGY).orElseThrow().getComponent();
     }
 
     public IItemHandler getStackHandler() {
-        return this.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).get().getComponent();
+        return this.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow().getComponent();
     }
 
     @Override

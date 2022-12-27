@@ -9,13 +9,11 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.CapabilityItemHandler;
-import org.jetbrains.annotations.NotNull;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
+import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
 import xyz.l7ssha.lushatest.core.LushaComponentBlockEntity;
-import xyz.l7ssha.lushatest.utils.StorageComponentStackHandlerBuilder;
+import xyz.l7ssha.lushatest.utils.RayTraceUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,7 +29,7 @@ public class ConfigCommand {
 
         @Override
         public Collection<String> getExamples() {
-            return Arrays.asList("1", "2");
+            return Arrays.asList("0", "1");
         }
     }
 
@@ -53,7 +51,8 @@ public class ConfigCommand {
 
     public static int slotConfig(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         final var player = (Player) context.getSource().getEntityOrException();
-        final var rayHit = rayTraceFromPlayer(player);
+
+        final var rayHit = RayTraceUtils.rayTraceFromPlayer(player, player.getLevel(), 10);
         final var blockEntity = player.getLevel().getBlockEntity(rayHit.getBlockPos());
 
         if (!(blockEntity instanceof final LushaComponentBlockEntity testTileEntity)) {
@@ -70,29 +69,15 @@ public class ConfigCommand {
         final var slot = context.getArgument("slot", Integer.class);
         final var stackLimit = context.getArgument("stackLimit", Integer.class);
 
-        ((StorageCapabilityComponent)itemHandlerComponent.get()).getStackHandlerProvider().setStackHandlerConfiguration(
-                new StorageComponentStackHandlerBuilder()
-                        .setSize(2)
-                        .addSlot(0, new StorageComponentStackHandlerBuilder.SlotConfigBuilder().setSlotLimit(1).setAllowExtract(false).setAllowInsert(false))
-                        .addSlot(1, new StorageComponentStackHandlerBuilder.SlotConfigBuilder().setSlotLimit(stackLimit).setAllowExtract(true).setAllowInsert(false))
-                        .build()
-        );
+        final var stackHandlerProvider = ((StorageCapabilityComponent)itemHandlerComponent.get()).getStackHandlerProvider();
+
+        final var configurationBuilder = StorageComponentStackHandlerBuilder.fromConfig(stackHandlerProvider.getStackHandlerConfiguration());
+        configurationBuilder.addSlot(slot, configurationBuilder.getSlots().get(slot).setAllowExtract(stackLimit > 0));
+
+        stackHandlerProvider.setStackHandlerConfiguration(configurationBuilder.build());
 
         context.getSource().sendSuccess(new TextComponent("Block pos: (%s, %s, %s); Provided slot: %s, Provided slot stack limit: %s".formatted(rayHit.getBlockPos().getX(), rayHit.getBlockPos().getY(), rayHit.getBlockPos().getZ(), slot, stackLimit)), true);
 
         return 1;
-    }
-
-    @NotNull
-    private static BlockHitResult rayTraceFromPlayer(Player player) {
-        double rayLength = 10f;
-        final var playerRotation = player.getViewVector(0);
-        final var rayPath = playerRotation.scale(rayLength);
-
-        final var from = player.getEyePosition(0);
-        final var to = from.add(rayPath);
-
-        final var rayCtx = new ClipContext(from, to, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, null);
-        return (player.getLevel()).clip(rayCtx);
     }
 }
