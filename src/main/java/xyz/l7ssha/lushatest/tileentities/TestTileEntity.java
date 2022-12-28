@@ -1,8 +1,7 @@
 package xyz.l7ssha.lushatest.tileentities;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,17 +14,12 @@ import xyz.l7ssha.lushatest.component.energy.EnergyCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
 import xyz.l7ssha.lushatest.core.LushaComponentTickerBlockEntity;
+import xyz.l7ssha.lushatest.recipe.TestTileEntityRecipe;
 import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
-
-import java.util.Map;
 
 public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEntity> {
 
     public final static int ENERGY_STORAGE_MAX = 2_147_483_647; // Integer.MAX_VALUE;
-
-    public final static Map<Item, Integer> processingMap = Map.of(
-            Items.DIAMOND, Integer.MAX_VALUE / 128
-    );
 
     public TestTileEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.TEST_BLOCK_ENTITY.get(), pos, state);
@@ -63,42 +57,51 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
     }
 
     protected void processMachine() {
-        final var inputSlotStack = this.getStackHandler().getStackInSlot(0);
-        final var outputSlotStack = this.getStackHandler().getStackInSlot(1);
+        final var storageComponent = (StorageCapabilityComponent) this.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow();
 
-        final var processingCost = processingMap.get(inputSlotStack.getItem());
-        if (processingCost == null) {
+        final var container = storageComponent.getAsContainer();
+
+        assert level != null;
+        final var recipe = level
+                .getRecipeManager()
+                .getRecipeFor(TestTileEntityRecipe.Type.INSTANCE, container, level);
+
+        if (recipe.isEmpty()) {
             return;
         }
 
-        if (!this.canProcess(inputSlotStack, outputSlotStack, processingCost)) {
+        if (!this.canProcess(recipe.get(), container)) {
             return;
         }
 
-        this.getEnergyStorage().extractEnergy(processingCost, false);
-
-        var stackToInsert = this.getStackHandler().getStackInSlot(0).copy();
-        stackToInsert.setCount(1);
-
-        this.getStackHandler().insertItem(1, stackToInsert, false);
+        this.getEnergyStorage().extractEnergy(recipe.get().getRecipeCost(), false);
+        this.getStackHandler().insertItem(1, recipe.get().getResultItem(), false);
     }
 
-    protected boolean canProcess(ItemStack inputSlotStack, ItemStack outputSlotStack, int processingCost) {
-        final var energyStorage = this.getEnergyStorage();
+    protected boolean canProcess(TestTileEntityRecipe recipe, SimpleContainer container) {
+        final var inputSlotStack = container.getItem(0);
+        final var outputSlotStack = container.getItem(1);
 
-        return energyStorage.getEnergyStored() > processingCost
+        return this.getEnergyStorage().getEnergyStored() > recipe.getRecipeCost()
                 && (inputSlotStack.getItem().equals(outputSlotStack.getItem()) || outputSlotStack.getItem().equals(Items.AIR))
                 && inputSlotStack.getCount() > 0
                 && outputSlotStack.getCount() < this.getStackHandler().getSlotLimit(1);
     }
 
     public int getCurrentProgressPercentage() {
-        var processingCost = processingMap.get(this.getStackHandler().getStackInSlot(0).getItem());
-        if (processingCost == null) {
+        final var storageComponent = (StorageCapabilityComponent) this.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow();
+
+        final var container = storageComponent.getAsContainer();
+
+        final var recipe = level
+                .getRecipeManager()
+                .getRecipeFor(TestTileEntityRecipe.Type.INSTANCE, container, level);
+
+        if (recipe.isEmpty()) {
             return 0;
         }
 
-        final var calculatedPercentage = (int) ((double) this.getEnergyStorage().getEnergyStored() / (double) processingCost * 100);
+        final var calculatedPercentage = (int) ((double) this.getEnergyStorage().getEnergyStored() / (double) recipe.get().getRecipeCost() * 100);
         return Math.min(100, calculatedPercentage);
     }
 }

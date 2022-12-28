@@ -13,10 +13,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import xyz.l7ssha.lushatest.commands.ConfigCommand;
-import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
-import xyz.l7ssha.lushatest.registration.BlockRegistry;
-import xyz.l7ssha.lushatest.registration.ContainerRegistry;
-import xyz.l7ssha.lushatest.registration.ItemRegistry;
+import xyz.l7ssha.lushatest.registration.*;
 import xyz.l7ssha.lushatest.screen.TestBlockContainerScreen;
 
 @Mod(LushaTestMod.MOD_ID)
@@ -40,12 +37,13 @@ public class LushaTestMod
 
         modEventBus.addListener(this::clientSetup);
 
-        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(LushaTestMod.class);
 
         ItemRegistry.setUp(modEventBus);
         BlockRegistry.setUp(modEventBus);
         BlockEntityRegistry.setUp(modEventBus);
         ContainerRegistry.setUp(modEventBus);
+        RecipeSerializerRegistry.register(modEventBus);
     }
 
     public void clientSetup(final FMLClientSetupEvent event) {

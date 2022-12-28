@@ -129,7 +129,10 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
                 var returnStack = super.insertItem(slot, copiedStack, simulate);
                 stack.shrink(stack.getCount() - returnStack.getCount());
 
-                StackHandlerProvider.this.blockEntity.updateBlockEntity();
+                if (!simulate) {
+                    StackHandlerProvider.this.blockEntity.updateBlockEntity();
+                }
+
                 return returnStack;
             }
 
@@ -137,7 +140,11 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 var returnStack = super.extractItem(slot, amount, simulate);
-                StackHandlerProvider.this.blockEntity.updateBlockEntity();
+
+                if (!simulate) {
+                    StackHandlerProvider.this.blockEntity.updateBlockEntity();
+                }
+
                 return returnStack;
             }
 

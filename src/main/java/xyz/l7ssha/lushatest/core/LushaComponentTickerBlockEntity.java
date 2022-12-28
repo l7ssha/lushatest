@@ -6,6 +6,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import xyz.l7ssha.lushatest.component.ICapabilityTicker;
 
 public class LushaComponentTickerBlockEntity<T extends BlockEntity> extends LushaComponentBlockEntity implements BlockEntityTicker<T> {
@@ -14,7 +15,7 @@ public class LushaComponentTickerBlockEntity<T extends BlockEntity> extends Lush
     }
 
     @Override
-    public void tick(Level world, BlockPos blockPos, BlockState blockState, T blockEntity) {
+    public void tick(Level world, @NotNull BlockPos blockPos, @NotNull BlockState blockState, @NotNull T blockEntity) {
         if (world.isClientSide()) {
             return;
         }

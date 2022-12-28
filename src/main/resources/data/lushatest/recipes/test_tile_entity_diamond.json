@@ -1,0 +1,7 @@
+{
+  "type": "lushatest:test_tile",
+  "input": {
+    "item": "minecraft:diamond"
+  },
+  "recipeCost": 16777215
+}

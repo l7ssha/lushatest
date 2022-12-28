@@ -2,6 +2,7 @@ package xyz.l7ssha.lushatest.component.storage;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.SimpleContainer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -25,6 +26,16 @@ public class StorageCapabilityComponent implements ICapabilityComponent<IItemHan
 
         this.stackHandlerProvider = new StackHandlerProvider<>(configuration, tileEntity);
         this.stackHandlerLazyOptional = LazyOptional.of(stackHandlerProvider::getMainHandler);
+    }
+
+    public SimpleContainer getAsContainer() {
+        final var container = new SimpleContainer(this.getComponent().getSlots());
+
+        for(var i = 0; i < container.getContainerSize(); i++) {
+            container.setItem(i, this.getComponent().getStackInSlot(i));
+        }
+
+        return container;
     }
 
     public StackHandlerProvider<TestTileEntity> getStackHandlerProvider() {
