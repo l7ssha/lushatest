@@ -28,7 +28,14 @@ public class TestBlockContainer extends LushaTestContainerMenu {
         this.containerLevelAccess = ContainerLevelAccess.create(playerInv.player.level, pos);
         this.containerData = containerData;
 
-        final var allowedItems = playerInv.player.getLevel().getRecipeManager().getAllRecipesFor(TestTileEntityRecipe.Type.INSTANCE).stream().parallel().map(recipe -> recipe.getInputItem().getItems()[0].getItem()).toList();
+        final var allowedItems = playerInv.player.getLevel()
+                .getRecipeManager()
+                .getAllRecipesFor(TestTileEntityRecipe.Type.INSTANCE)
+                .stream()
+                .parallel()
+                .map(recipe -> recipe.getInputItem().getItems()[0].getItem())
+                .toList();
+
         addSlot(new ItemRestrictedSlot(slots, 0, 26, 36, allowedItems));
         addSlot(new ReadonlySlot(slots, 1, 98, 36));
 

@@ -1,0 +1,7 @@
+{
+  "type": "lushatest:test_tile",
+  "input": {
+    "item": "minecraft:emerald"
+  },
+  "processingCost": 33554431
+}

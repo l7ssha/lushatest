@@ -86,7 +86,7 @@ public class TestTileEntityRecipe implements Recipe<SimpleContainer> {
         @Override
         public @NotNull TestTileEntityRecipe fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json) {
             final var input = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));
-            final var recipeCost = GsonHelper.getAsInt(json, "recipeCost");
+            final var recipeCost = GsonHelper.getAsInt(json, "processingCost");
 
             return new TestTileEntityRecipe(id, input, recipeCost);
         }

@@ -3,5 +3,5 @@
   "input": {
     "item": "minecraft:diamond"
   },
-  "recipeCost": 16777215
+  "processingCost": 16777215
 }

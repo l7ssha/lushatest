@@ -37,7 +37,7 @@ public class LushaTestMod
 
         modEventBus.addListener(this::clientSetup);
 
-        MinecraftForge.EVENT_BUS.register(LushaTestMod.class);
+        MinecraftForge.EVENT_BUS.register(this);
 
         ItemRegistry.setUp(modEventBus);
         BlockRegistry.setUp(modEventBus);
