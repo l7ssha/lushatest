@@ -1,0 +1,7 @@
+{
+  "type": "lushatest:test_tile",
+  "input": {
+    "item": "minecraft:coal"
+  },
+  "processingCost": 4194303
+}

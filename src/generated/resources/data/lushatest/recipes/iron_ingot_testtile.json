@@ -1,0 +1,7 @@
+{
+  "type": "lushatest:test_tile",
+  "input": {
+    "item": "minecraft:iron_ingot"
+  },
+  "processingCost": 16777215
+}

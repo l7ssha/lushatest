@@ -28,7 +28,7 @@ public class TestBlockContainerScreen extends AbstractContainerScreen<TestBlockC
         super.render(stack, mouseX, mouseY, partialTicks);
 
         final var currentProgress = this.menu.getContainerData().get(1);
-        if (mouseX > this.leftPos + 57 && mouseX < this.leftPos + 57 + 100 && mouseY > this.topPos + 36 && mouseY < this.topPos + 36 + 17) {
+        if (mouseX > this.leftPos + 57 && mouseX < this.leftPos + 57 + 30 && mouseY > this.topPos + 36 && mouseY < this.topPos + 36 + 17) {
             this.drawTextWithShadow(stack, currentProgress + "%", mouseX + 5, mouseY + 5);
         }
     }

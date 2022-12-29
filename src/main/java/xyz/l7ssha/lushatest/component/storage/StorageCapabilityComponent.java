@@ -28,7 +28,7 @@ public class StorageCapabilityComponent implements ICapabilityComponent<IItemHan
         this.stackHandlerLazyOptional = LazyOptional.of(stackHandlerProvider::getMainHandler);
     }
 
-    public SimpleContainer getAsContainer() {
+    public SimpleContainer getAsSimpleContainer() {
         final var container = new SimpleContainer(this.getComponent().getSlots());
 
         for(var i = 0; i < container.getContainerSize(); i++) {

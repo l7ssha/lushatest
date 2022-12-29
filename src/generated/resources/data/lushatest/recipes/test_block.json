@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CAC",
+    "ANA",
+    "NAN"
+  ],
+  "key": {
+    "C": {
+      "item": "mekanism:ultimate_control_circuit"
+    },
+    "A": {
+      "item": "mekanism:pellet_antimatter"
+    },
+    "N": {
+      "item": "mekanism:antiprotonic_nucleosynthesizer"
+    }
+  },
+  "result": {
+    "item": "lushatest:test_block"
+  }
+}

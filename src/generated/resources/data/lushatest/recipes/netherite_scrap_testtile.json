@@ -1,0 +1,7 @@
+{
+  "type": "lushatest:test_tile",
+  "input": {
+    "item": "minecraft:netherite_scrap"
+  },
+  "processingCost": 536870911
+}
