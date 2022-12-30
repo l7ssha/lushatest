@@ -41,35 +41,7 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
     }
 
     public LazyOptional<IItemHandler> getHandlerForSide(Direction direction) {
-        return LazyOptional.of(() -> new ItemStackHandler(this.getStackHandlerConfiguration().getSize()) {
-            @NotNull
-            @Override
-            public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                final var slotConfiguration = StackHandlerProvider.this.stackHandlerConfiguration
-                        .getSlotConfiguration()
-                        .get(slot);
-
-                if (slotConfiguration != null && !slotConfiguration.isAllowInsert()) {
-                    return ItemStack.EMPTY;
-                }
-
-                return StackHandlerProvider.this.stackHandler.insertItem(slot, stack, simulate);
-            }
-
-            @NotNull
-            @Override
-            public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                final var slotConfiguration = StackHandlerProvider.this.stackHandlerConfiguration
-                        .getSlotConfiguration()
-                        .get(slot);
-
-                if (slotConfiguration != null && !slotConfiguration.isAllowExtract()) {
-                    return ItemStack.EMPTY;
-                }
-
-                return StackHandlerProvider.this.stackHandler.extractItem(slot, amount, simulate);
-            }
-        }).cast();
+        return LazyOptional.of(() -> new WrappedItemStackHandler(this.getStackHandlerConfiguration(), this.getMainHandler())).cast();
     }
 
     void saveAdditional(CompoundTag tag) {

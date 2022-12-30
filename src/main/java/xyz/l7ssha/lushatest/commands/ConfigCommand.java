@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class ConfigCommand {
-
     public static class IntegerArgument implements ArgumentType<Integer> {
 
         @Override

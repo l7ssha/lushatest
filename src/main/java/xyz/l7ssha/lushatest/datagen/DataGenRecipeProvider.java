@@ -16,12 +16,12 @@ import java.util.function.Consumer;
 
 public class DataGenRecipeProvider extends RecipeProvider {
     protected final Map<Item, Integer> testTileEntityRecipeMap = Map.ofEntries(
-            Map.entry(Items.COAL, Integer.MAX_VALUE / 512),
-            Map.entry(Items.IRON_INGOT, Integer.MAX_VALUE / 128),
-            Map.entry(Items.GOLD_INGOT, Integer.MAX_VALUE / 96),
-            Map.entry(Items.DIAMOND, Integer.MAX_VALUE / 64),
-            Map.entry(Items.EMERALD, Integer.MAX_VALUE / 32),
-            Map.entry(Items.NETHERITE_SCRAP, Integer.MAX_VALUE / 4)
+            Map.entry(Items.COAL, Integer.MAX_VALUE / 256),
+            Map.entry(Items.IRON_INGOT, Integer.MAX_VALUE / 64),
+            Map.entry(Items.GOLD_INGOT, Integer.MAX_VALUE / 48),
+            Map.entry(Items.DIAMOND, Integer.MAX_VALUE / 32),
+            Map.entry(Items.EMERALD, Integer.MAX_VALUE / 16),
+            Map.entry(Items.NETHERITE_SCRAP, Integer.MAX_VALUE / 2)
     );
 
     public DataGenRecipeProvider(DataGenerator dataGenerator) {
