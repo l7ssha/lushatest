@@ -31,6 +31,11 @@ public class TestBlockContainerScreen extends AbstractContainerScreen<TestBlockC
         if (mouseX > this.leftPos + 57 && mouseX < this.leftPos + 57 + 30 && mouseY > this.topPos + 36 && mouseY < this.topPos + 36 + 17) {
             this.drawTextWithShadow(stack, currentProgress + "%", mouseX + 5, mouseY + 5);
         }
+
+        final var storedEnergyText = this.getStoredEnergyText();
+        if (mouseX > this.leftPos + 136 && mouseX < this.leftPos + 146 + 30 && mouseY > this.topPos + 10 && mouseY < this.topPos + 36 + 63) {
+            this.drawTextWithShadow(stack, storedEnergyText, mouseX + 5, mouseY + 5);
+        }
     }
 
     @Override
@@ -60,5 +65,23 @@ public class TestBlockContainerScreen extends AbstractContainerScreen<TestBlockC
     protected void drawTextWithShadow(PoseStack poseStack, String text, int posX, int posY) {
         this.font.draw(poseStack, text, posX + 1, posY + 1, 0x000000);
         this.font.draw(poseStack, text, posX, posY, 0xffffff);
+    }
+
+    protected String getStoredEnergyText() {
+        final var storedEnergy = this.menu.getContainerData().get(0);
+
+        if (storedEnergy > 1_000_000_000) {
+            return "%.2f B RF".formatted(((double) storedEnergy / 1_000_000_000));
+        }
+
+        if (storedEnergy > 1_000_000) {
+            return "%.2f M RF".formatted(((double) storedEnergy / 1_000_000));
+        }
+
+        if (storedEnergy > 1_000) {
+            return "%.2f k RF".formatted(((double) storedEnergy / 1_000));
+        }
+
+        return storedEnergy + " RF";
     }
 }
