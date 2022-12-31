@@ -51,19 +51,20 @@ public class TestBlockContainerScreen extends LushaContainerScreen<TestBlockCont
 
     protected String getStoredEnergyText() {
         final var storedEnergy = this.menu.getContainerData().get(0);
+        final var storedEnergyPercentage = (double) storedEnergy / TestTileEntity.ENERGY_STORAGE_MAX * 100;
 
         if (storedEnergy > 1_000_000_000) {
-            return "%.2f B RF".formatted(((double) storedEnergy / 1_000_000_000));
+            return "%.2f B RF (%.1f%%)".formatted(((double) storedEnergy / 1_000_000_000), storedEnergyPercentage);
         }
 
         if (storedEnergy > 1_000_000) {
-            return "%.2f M RF".formatted(((double) storedEnergy / 1_000_000));
+            return "%.2f M RF (%.1f%%)".formatted(((double) storedEnergy / 1_000_000), storedEnergyPercentage);
         }
 
         if (storedEnergy > 1_000) {
-            return "%.2f k RF".formatted(((double) storedEnergy / 1_000));
+            return "%.2f k RF (%.1f%%)".formatted(((double) storedEnergy / 1_000), storedEnergyPercentage);
         }
 
-        return storedEnergy + " RF";
+        return "Empty";
     }
 }
