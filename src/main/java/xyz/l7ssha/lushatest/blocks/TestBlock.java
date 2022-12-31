@@ -61,4 +61,16 @@ final public class TestBlock extends Block implements EntityBlock, IForgeBlock {
 
         return (level0, pos, state0, blockEntity) -> ((TestTileEntity) blockEntity).tick(level0, pos, state0, (TestTileEntity) blockEntity);
     }
+
+    @Override
+    public void neighborChanged(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos pos, @NotNull Block block, @NotNull BlockPos posChanged, boolean b) {
+        final var power = level.getDirectSignalTo(pos);
+
+        final var blockEntity = (TestTileEntity) level.getBlockEntity(pos);
+        if (blockEntity == null) {
+            return;
+        }
+
+        blockEntity.setActiveState(power == 15);
+    }
 }

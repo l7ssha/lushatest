@@ -20,6 +20,7 @@ import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
 public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEntity> {
     public final static int ENERGY_STORAGE_MAX = 2_147_483_647; // Integer.MAX_VALUE;
     public final static int ENERGY_STORAGE_REQUIRED_TO_RUN = ENERGY_STORAGE_MAX / 3; // Integer.MAX_VALUE;
+    private boolean activeState = false;
 
     public TestTileEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.TEST_BLOCK_ENTITY.get(), pos, state);
@@ -35,6 +36,11 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
                         this
                 )
         );
+    }
+
+    public void setActiveState(boolean activeState) {
+        this.activeState = activeState;
+        this.setChanged();
     }
 
     public IEnergyStorage getEnergyStorage() {
@@ -84,14 +90,19 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
 
         final var energyStored = this.getEnergyStorage().getEnergyStored();
 
-        return energyStored > recipe.getRecipeCost()
-                && energyStored > ENERGY_STORAGE_MAX / 2
+        return activeState
+                && energyStored > recipe.getRecipeCost()
+                && energyStored > ENERGY_STORAGE_REQUIRED_TO_RUN
                 && (inputSlotStack.getItem().equals(outputSlotStack.getItem()) || outputSlotStack.getItem().equals(Items.AIR))
                 && inputSlotStack.getCount() > 0
                 && outputSlotStack.getCount() < this.getStackHandler().getSlotLimit(1);
     }
 
     public int getCurrentProgressPercentage() {
+        if (!this.activeState) {
+            return 0;
+        }
+
         final var storageComponent = (StorageCapabilityComponent) this.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow();
 
         final var container = storageComponent.getAsSimpleContainer();
