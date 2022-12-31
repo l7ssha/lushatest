@@ -44,7 +44,6 @@ public class TestTileRecipeBuilder implements RecipeBuilder {
     public void save(@NotNull Consumer<FinishedRecipe> recipeConsumer, @NotNull ResourceLocation id) {
         recipeConsumer.accept(
                 new TestTileRecipeBuilder.Result(
-                        id,
                         this.input,
                         this.processingCost
                 )
@@ -52,12 +51,10 @@ public class TestTileRecipeBuilder implements RecipeBuilder {
     }
 
   protected static class Result implements FinishedRecipe {
-      private final ResourceLocation id;
       private final Item input;
       private final int processingCost;
 
-      public Result(ResourceLocation id, Item input, int processingCost) {
-          this.id = id;
+      public Result(Item input, int processingCost) {
           this.input = input;
           this.processingCost = processingCost;
       }
