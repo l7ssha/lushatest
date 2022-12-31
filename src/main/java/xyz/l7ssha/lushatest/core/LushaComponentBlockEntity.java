@@ -36,10 +36,10 @@ public class LushaComponentBlockEntity extends LushaTestBlockEntity {
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        for(final var component: this.getComponents()) {
-            if (cap == component.getType()) {
-                return component.getCapability(side).cast();
-            }
+        final var component = this.components.get(cap);
+
+        if (component != null) {
+            return component.getCapability(side).cast();
         }
 
         return super.getCapability(cap, side);

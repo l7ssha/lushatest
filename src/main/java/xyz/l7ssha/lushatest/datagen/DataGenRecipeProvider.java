@@ -9,6 +9,7 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import xyz.l7ssha.lushatest.datagen.recipe.TestTileRecipeBuilder;
 import xyz.l7ssha.lushatest.registration.BlockRegistry;
+import xyz.l7ssha.lushatest.registration.ItemRegistry;
 import xyz.l7ssha.lushatest.utils.RegistryUtils;
 
 import java.util.Map;
@@ -34,14 +35,25 @@ public class DataGenRecipeProvider extends RecipeProvider {
             (new TestTileRecipeBuilder(recipeEntry.getKey(), recipeEntry.getValue())).save(recipeConsumer);
         }
 
-        ShapedRecipeBuilder.shaped(BlockRegistry.TEST_BLOCK.get())
+        ShapedRecipeBuilder.shaped(ItemRegistry.TEST_ITEM.get())
                 .pattern("CAC")
                 .pattern("ANA")
-                .pattern("NAN")
+                .pattern("CAC")
                 .define('C', RegistryUtils.getItem("mekanism:ultimate_control_circuit"))
                 .define('A', RegistryUtils.getItem("mekanism:pellet_antimatter"))
                 .define('N', RegistryUtils.getBlock("mekanism:antiprotonic_nucleosynthesizer"))
                 .unlockedBy("has_antimatter", has(RegistryUtils.getItem("mekanism:pellet_antimatter")))
+                .save(recipeConsumer);
+
+        ShapedRecipeBuilder.shaped(BlockRegistry.TEST_BLOCK.get())
+                .pattern("CAC")
+                .pattern("IMI")
+                .pattern("CIC")
+                .define('C', RegistryUtils.getItem("mekanism:ultimate_control_circuit"))
+                .define('A', RegistryUtils.getItem("mekanism:pellet_antimatter"))
+                .define('M', RegistryUtils.getBlock("mekanism:steel_casing"))
+                .define('I', ItemRegistry.TEST_ITEM.get())
+                .unlockedBy("has_antimatter", has(ItemRegistry.TEST_ITEM.get()))
                 .save(recipeConsumer);
     }
 }

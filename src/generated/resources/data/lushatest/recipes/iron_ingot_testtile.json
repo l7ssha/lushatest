@@ -3,5 +3,5 @@
   "input": {
     "item": "minecraft:iron_ingot"
   },
-  "processingCost": 16777215
+  "processingCost": 33554431
 }

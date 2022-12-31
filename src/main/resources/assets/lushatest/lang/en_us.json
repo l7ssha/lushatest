@@ -1,5 +1,6 @@
 {
   "lushatest.blockduplicator": "Lusha Block Duplicator",
   "block.lushatest.test_block": "Lusha Block Duplicator",
-  "itemGroup.lushatest_tab": "Lusha Test"
+  "itemGroup.lushatest_tab": "Lusha Test",
+  "item.lushatest.test_item": "Antiprotonic Nucleosynthesizer Component"
 }

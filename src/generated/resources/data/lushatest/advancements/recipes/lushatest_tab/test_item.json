@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "lushatest:test_block"
+      "lushatest:test_item"
     ]
   },
   "criteria": {
@@ -12,7 +12,7 @@
         "items": [
           {
             "items": [
-              "lushatest:test_item"
+              "mekanism:pellet_antimatter"
             ]
           }
         ]
@@ -21,7 +21,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "lushatest:test_block"
+        "recipe": "lushatest:test_item"
       }
     }
   },

@@ -19,7 +19,7 @@ import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
 
 public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEntity> {
     public final static int ENERGY_STORAGE_MAX = 2_147_483_647; // Integer.MAX_VALUE;
-    public final static int ENERGY_STORAGE_REQUIRED_TO_RUN = ENERGY_STORAGE_MAX / 3; // Integer.MAX_VALUE;
+    public final static int ENERGY_STORAGE_REQUIRED_TO_RUN = (int) (ENERGY_STORAGE_MAX * 0.75); // Integer.MAX_VALUE;
     private boolean activeState = false;
 
     public TestTileEntity(BlockPos pos, BlockState state) {

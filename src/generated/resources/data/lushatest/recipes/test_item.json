@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "CAC",
-    "IMI",
-    "CIC"
+    "ANA",
+    "CAC"
   ],
   "key": {
     "C": {
@@ -12,14 +12,11 @@
     "A": {
       "item": "mekanism:pellet_antimatter"
     },
-    "M": {
-      "item": "mekanism:steel_casing"
-    },
-    "I": {
-      "item": "lushatest:test_item"
+    "N": {
+      "item": "mekanism:antiprotonic_nucleosynthesizer"
     }
   },
   "result": {
-    "item": "lushatest:test_block"
+    "item": "lushatest:test_item"
   }
 }
