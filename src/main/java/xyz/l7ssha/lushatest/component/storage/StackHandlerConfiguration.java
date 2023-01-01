@@ -12,14 +12,11 @@ public class StackHandlerConfiguration {
     public static class SlotConfiguration {
         private final int slotLimit;
 
-        private final boolean allowInsert;
+        private final InventoryConfigMode mode;
 
-        private final boolean allowExtract;
-
-        private SlotConfiguration(int slotLimit, boolean allowInsert, boolean allowExtract) {
+        private SlotConfiguration(int slotLimit, InventoryConfigMode mode) {
             this.slotLimit = slotLimit;
-            this.allowInsert = allowInsert;
-            this.allowExtract = allowExtract;
+            this.mode = mode;
         }
 
         public int getSlotLimit() {
@@ -27,11 +24,21 @@ public class StackHandlerConfiguration {
         }
 
         public boolean isAllowInsert() {
-            return allowInsert;
+            return switch (mode) {
+                case INPUT, INPUT_OUTPUT -> true;
+                default -> false;
+            };
         }
 
         public boolean isAllowExtract() {
-            return allowExtract;
+            return switch (mode) {
+                case OUTPUT, INPUT_OUTPUT -> true;
+                default -> false;
+            };
+        }
+
+        public InventoryConfigMode getMode() {
+            return mode;
         }
     }
 
@@ -42,7 +49,7 @@ public class StackHandlerConfiguration {
         for(final var entry: builder.getSlots().entrySet()) {
             slotConfiguration.put(
                     entry.getKey(),
-                    new SlotConfiguration(entry.getValue().getSlotLimit(), entry.getValue().isAllowInsert(), entry.getValue().isAllowExtract())
+                    new SlotConfiguration(entry.getValue().getSlotLimit(), entry.getValue().getMode())
             );
         }
     }

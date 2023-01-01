@@ -12,20 +12,16 @@ public final class StorageComponentStackHandlerBuilder {
     public static class SlotConfigBuilder {
         private int slotLimit;
 
-        private boolean allowInsert;
-
-        private boolean allowExtract;
+        private InventoryConfigMode mode;
 
         public SlotConfigBuilder() {
             this.slotLimit = 64;
-            this.allowInsert = false;
-            this.allowExtract = false;
+            this.mode = InventoryConfigMode.NONE;
         }
 
-        public SlotConfigBuilder(int slotLimit, boolean allowInsert, boolean allowExtract) {
+        public SlotConfigBuilder(int slotLimit, InventoryConfigMode mode) {
             this.slotLimit = slotLimit;
-            this.allowInsert = allowInsert;
-            this.allowExtract = allowExtract;
+            this.mode = mode;
         }
 
         public int getSlotLimit() {
@@ -37,21 +33,12 @@ public final class StorageComponentStackHandlerBuilder {
             return this;
         }
 
-        public boolean isAllowInsert() {
-            return allowInsert;
+        public InventoryConfigMode getMode() {
+            return mode;
         }
 
-        public SlotConfigBuilder setAllowInsert(boolean allowInsert) {
-            this.allowInsert = allowInsert;
-            return this;
-        }
-
-        public boolean isAllowExtract() {
-            return allowExtract;
-        }
-
-        public SlotConfigBuilder setAllowExtract(boolean allowExtract) {
-            this.allowExtract = allowExtract;
+        public SlotConfigBuilder setMode(InventoryConfigMode mode) {
+            this.mode = mode;
             return this;
         }
     }
@@ -65,8 +52,7 @@ public final class StorageComponentStackHandlerBuilder {
                     slotConfigEntry.getKey(),
                     new StorageComponentStackHandlerBuilder.SlotConfigBuilder()
                             .setSlotLimit(slotConfigEntry.getValue().getSlotLimit())
-                            .setAllowExtract(slotConfigEntry.getValue().isAllowExtract())
-                            .setAllowInsert(slotConfigEntry.getValue().isAllowInsert())
+                            .setMode(slotConfigEntry.getValue().getMode())
             );
         }
 

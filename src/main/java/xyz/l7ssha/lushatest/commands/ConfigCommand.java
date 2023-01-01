@@ -5,11 +5,14 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.CapabilityItemHandler;
+import xyz.l7ssha.lushatest.component.storage.InventoryConfigMode;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
 import xyz.l7ssha.lushatest.core.LushaComponentBlockEntity;
@@ -17,6 +20,7 @@ import xyz.l7ssha.lushatest.utils.RayTraceUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
 public class ConfigCommand {
     public static class IntegerArgument implements ArgumentType<Integer> {
@@ -32,6 +36,22 @@ public class ConfigCommand {
         }
     }
 
+    public static class InventorySlotModeArgument implements ArgumentType<String> {
+        @Override
+        public String parse(StringReader reader) throws CommandSyntaxException {
+            return reader.readString();
+        }
+
+        @Override
+        public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+            for (final var inventoryConfig: InventoryConfigMode.values()) {
+                builder.suggest(inventoryConfig.getLabel());
+            }
+
+            return builder.buildFuture();
+        }
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         final var command = Commands.literal("lushatest")
                 .then(
@@ -39,7 +59,7 @@ public class ConfigCommand {
                                 .then(
                                         Commands.argument("slot", new IntegerArgument())
                                                 .then(
-                                                        Commands.argument("stackLimit", new IntegerArgument())
+                                                        Commands.argument("mode", new InventorySlotModeArgument())
                                                                 .executes(ConfigCommand::slotConfig)
                                                 )
                                 )
@@ -66,16 +86,16 @@ public class ConfigCommand {
         }
 
         final var slot = context.getArgument("slot", Integer.class);
-        final var stackLimit = context.getArgument("stackLimit", Integer.class);
+        final var modeLabel = context.getArgument("mode", String.class);
 
         final var stackHandlerProvider = ((StorageCapabilityComponent)itemHandlerComponent.get()).getStackHandlerProvider();
 
         final var configurationBuilder = StorageComponentStackHandlerBuilder.fromConfig(stackHandlerProvider.getStackHandlerConfiguration());
-        configurationBuilder.addSlot(slot, configurationBuilder.getSlots().get(slot).setAllowExtract(stackLimit > 0));
+        configurationBuilder.addSlot(slot, configurationBuilder.getSlots().get(slot).setMode(InventoryConfigMode.fromLabel(modeLabel)));
 
         stackHandlerProvider.setStackHandlerConfiguration(configurationBuilder.build());
 
-        context.getSource().sendSuccess(new TextComponent("Block pos: (%s, %s, %s); Provided slot: %s, Provided slot stack limit: %s".formatted(rayHit.getBlockPos().getX(), rayHit.getBlockPos().getY(), rayHit.getBlockPos().getZ(), slot, stackLimit)), true);
+        context.getSource().sendSuccess(new TextComponent("Block pos: (%s, %s, %s); Provided slot: %s, Provided mode: %s".formatted(rayHit.getBlockPos().getX(), rayHit.getBlockPos().getY(), rayHit.getBlockPos().getZ(), slot, modeLabel)), true);
 
         return 1;
     }

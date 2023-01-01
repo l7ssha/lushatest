@@ -14,8 +14,7 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
     protected final static String CONFIG_SIZE = "size";
     protected final static String CONFIG_SLOTS_NUMBER = "slotsNumber";
     protected final static String CONFIG_STACK_LIMIT = "stackLimit";
-    protected final static String CONFIG_ALLOW_INSERT = "allowInsert";
-    protected final static String CONFIG_ALLOW_EXTRACT = "allowExtract";
+    protected final static String CONFIG_MODE = "mode";
     protected final static String CONFIG_SLOT_N_PATTERN = "slot[%s]";
     protected final static String CONFIG_HANDLER_CONFIGURATION_STACK = "stack_handler_configuration";
 
@@ -38,6 +37,7 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
 
     public void setStackHandlerConfiguration(StackHandlerConfiguration stackHandlerConfiguration) {
         this.stackHandlerConfiguration = stackHandlerConfiguration;
+        this.blockEntity.updateBlockEntity();
     }
 
     public LazyOptional<IItemHandler> getHandlerForSide(Direction direction) {
@@ -53,8 +53,7 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
             final var slotConfigTag = new CompoundTag();
 
             slotConfigTag.putInt(CONFIG_STACK_LIMIT, slotConfig.getValue().getSlotLimit());
-            slotConfigTag.putBoolean(CONFIG_ALLOW_INSERT, slotConfig.getValue().isAllowInsert());
-            slotConfigTag.putBoolean(CONFIG_ALLOW_EXTRACT, slotConfig.getValue().isAllowExtract());
+            slotConfigTag.putInt(CONFIG_MODE, slotConfig.getValue().getMode().getIndex());
 
             configurationTag.put(CONFIG_SLOT_N_PATTERN.formatted(slotConfig.getKey()), slotConfigTag);
         }
@@ -77,8 +76,7 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
 
             configBuilder.addSlot(i, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(
                     slotTag.getInt(CONFIG_STACK_LIMIT),
-                    slotTag.getBoolean(CONFIG_ALLOW_INSERT),
-                    slotTag.getBoolean(CONFIG_ALLOW_EXTRACT)
+                    InventoryConfigMode.fromIndex(slotTag.getInt(CONFIG_MODE))
             ));
         }
 

@@ -11,6 +11,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import xyz.l7ssha.lushatest.component.energy.EnergyCapabilityComponent;
+import xyz.l7ssha.lushatest.component.storage.InventoryConfigMode;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
 import xyz.l7ssha.lushatest.core.LushaComponentTickerBlockEntity;
@@ -30,8 +31,8 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
                 new StorageCapabilityComponent(
                         new StorageComponentStackHandlerBuilder()
                                 .setSize(2)
-                                .addSlot(0, new StorageComponentStackHandlerBuilder.SlotConfigBuilder().setSlotLimit(1).setAllowExtract(false).setAllowInsert(false))
-                                .addSlot(1, new StorageComponentStackHandlerBuilder.SlotConfigBuilder().setSlotLimit(64).setAllowExtract(true).setAllowInsert(false))
+                                .addSlot(0, new StorageComponentStackHandlerBuilder.SlotConfigBuilder().setSlotLimit(1).setMode(InventoryConfigMode.NONE))
+                                .addSlot(1, new StorageComponentStackHandlerBuilder.SlotConfigBuilder().setSlotLimit(64).setMode(InventoryConfigMode.OUTPUT))
                                 .build(),
                         this
                 )
