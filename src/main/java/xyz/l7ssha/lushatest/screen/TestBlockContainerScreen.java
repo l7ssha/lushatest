@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import xyz.l7ssha.lushatest.LushaTestMod;
 import xyz.l7ssha.lushatest.container.TestBlockContainer;
+import xyz.l7ssha.lushatest.screen.widget.InventorySidedConfigWidget;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 import xyz.l7ssha.lushatest.utils.Utils;
 
@@ -29,6 +30,8 @@ public class TestBlockContainerScreen extends LushaContainerScreen<TestBlockCont
         if (mouseX > this.leftPos + 136 && mouseX < this.leftPos + 146 + 25 && mouseY > this.topPos + 10 && mouseY < this.topPos + 36 + 36) {
             this.renderTooltip(stack, new TextComponent(storedEnergyText), mouseX + 5, mouseY + 5);
         }
+
+        this.addRenderableWidget(new InventorySidedConfigWidget(this.leftPos, this.topPos));
     }
 
     @Override
