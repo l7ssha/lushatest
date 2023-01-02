@@ -57,11 +57,8 @@ public class ConfigCommand {
                 .then(
                         Commands.literal("slotConfig")
                                 .then(
-                                        Commands.argument("slot", new IntegerArgument())
-                                                .then(
-                                                        Commands.argument("mode", new InventorySlotModeArgument())
-                                                                .executes(ConfigCommand::slotConfig)
-                                                )
+                                        Commands.argument("mode", new InventorySlotModeArgument())
+                                                .executes(ConfigCommand::slotConfig)
                                 )
                 );
 
@@ -85,17 +82,16 @@ public class ConfigCommand {
             return -1;
         }
 
-        final var slot = context.getArgument("slot", Integer.class);
         final var modeLabel = context.getArgument("mode", String.class);
 
         final var stackHandlerProvider = ((StorageCapabilityComponent)itemHandlerComponent.get()).getStackHandlerProvider();
 
         final var configurationBuilder = StorageComponentStackHandlerBuilder.fromConfig(stackHandlerProvider.getStackHandlerConfiguration());
-        configurationBuilder.addSlot(slot, configurationBuilder.getSlots().get(slot).setMode(InventoryConfigMode.fromLabel(modeLabel)));
+        configurationBuilder.addSideConfig(rayHit.getDirection(), new StorageComponentStackHandlerBuilder.SideConfigBuilder(InventoryConfigMode.fromLabel(modeLabel)));
 
         stackHandlerProvider.setStackHandlerConfiguration(configurationBuilder.build());
 
-        context.getSource().sendSuccess(new TextComponent("Block pos: (%s, %s, %s); Provided slot: %s, Provided mode: %s".formatted(rayHit.getBlockPos().getX(), rayHit.getBlockPos().getY(), rayHit.getBlockPos().getZ(), slot, modeLabel)), true);
+        context.getSource().sendSuccess(new TextComponent("Block pos: (%s, %s, %s); Provided mode: %s".formatted(rayHit.getBlockPos().getX(), rayHit.getBlockPos().getY(), rayHit.getBlockPos().getZ(), modeLabel)), true);
 
         return 1;
     }

@@ -31,4 +31,18 @@ public enum InventoryConfigMode {
     public String getLabel() {
         return label;
     }
+
+    public boolean isAllowInsert() {
+        return switch (this) {
+            case INPUT, INPUT_OUTPUT -> true;
+            default -> false;
+        };
+    }
+
+    public boolean isAllowExtract() {
+        return switch (this) {
+            case OUTPUT, INPUT_OUTPUT -> true;
+            default -> false;
+        };
+    }
 }

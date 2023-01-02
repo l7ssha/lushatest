@@ -17,6 +17,7 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
     protected final static String CONFIG_MODE = "mode";
     protected final static String CONFIG_SLOT_N_PATTERN = "slot[%s]";
     protected final static String CONFIG_HANDLER_CONFIGURATION_STACK = "stack_handler_configuration";
+    protected static final String CONFIG_SIDE_PATTERN = "side[%s]";
 
     private StackHandlerConfiguration stackHandlerConfiguration;
 
@@ -24,11 +25,12 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
 
     private final T blockEntity;
 
+
     public StackHandlerProvider(StackHandlerConfiguration stackHandlerConfiguration, T blockEntity) {
         this.stackHandlerConfiguration = stackHandlerConfiguration;
         this.blockEntity = blockEntity;
 
-        this.stackHandler = createMainHandler();
+        this.stackHandler = createMainHandler(stackHandlerConfiguration);
     }
 
     public StackHandlerConfiguration getStackHandlerConfiguration() {
@@ -37,25 +39,38 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
 
     public void setStackHandlerConfiguration(StackHandlerConfiguration stackHandlerConfiguration) {
         this.stackHandlerConfiguration = stackHandlerConfiguration;
-        this.blockEntity.updateBlockEntity();
+        this.blockEntity.updateBlockEntity(); // TODO: Thats probably not needed. To investigate
     }
 
     public LazyOptional<IItemHandler> getHandlerForSide(Direction direction) {
-        return LazyOptional.of(() -> new WrappedItemStackHandler(this.getStackHandlerConfiguration(), this.getMainHandler())).cast();
+        final var wrapperHandler = new WrappedItemStackHandler(direction, this.getStackHandlerConfiguration(), this.getMainHandler());
+
+        if (wrapperHandler.isNoneMode()) {
+            return LazyOptional.empty();
+        }
+
+        return LazyOptional.of(() -> wrapperHandler).cast();
     }
 
     void saveAdditional(CompoundTag tag) {
         final var configurationTag = new CompoundTag();
         configurationTag.putInt(CONFIG_SIZE, this.getStackHandlerConfiguration().getSize());
-        configurationTag.putInt(CONFIG_SLOTS_NUMBER, this.getStackHandlerConfiguration().getSlotConfiguration().size());
+        configurationTag.putInt(CONFIG_SLOTS_NUMBER, this.getStackHandlerConfiguration().getSideConfiguration().size());
 
-        for (final var slotConfig: this.getStackHandlerConfiguration().getSlotConfiguration().entrySet()) {
+        for (final var slotConfig : this.getStackHandlerConfiguration().getSlotConfiguration().entrySet()) {
             final var slotConfigTag = new CompoundTag();
 
             slotConfigTag.putInt(CONFIG_STACK_LIMIT, slotConfig.getValue().getSlotLimit());
             slotConfigTag.putInt(CONFIG_MODE, slotConfig.getValue().getMode().getIndex());
 
             configurationTag.put(CONFIG_SLOT_N_PATTERN.formatted(slotConfig.getKey()), slotConfigTag);
+        }
+
+        for (final var sideConfig : this.getStackHandlerConfiguration().getSideConfiguration().entrySet()) {
+            final var sideConfigTag = new CompoundTag();
+
+            sideConfigTag.putInt(CONFIG_MODE, sideConfig.getValue().getMode().getIndex());
+            configurationTag.put(CONFIG_SIDE_PATTERN.formatted(sideConfig.getKey().getName()), sideConfigTag);
         }
 
         tag.put(CONFIG_HANDLER_CONFIGURATION_STACK, configurationTag);
@@ -74,9 +89,17 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
         for (var i = 0; i < slotsNumber; i++) {
             final var slotTag = configurationTag.getCompound(CONFIG_SLOT_N_PATTERN.formatted(i));
 
-            configBuilder.addSlot(i, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(
+            configBuilder.addSlotConfig(i, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(
                     slotTag.getInt(CONFIG_STACK_LIMIT),
                     InventoryConfigMode.fromIndex(slotTag.getInt(CONFIG_MODE))
+            ));
+        }
+
+        for (final var side : Direction.values()) {
+            final var sideTag = configurationTag.getCompound(CONFIG_SIDE_PATTERN.formatted(side.getName()));
+
+            configBuilder.addSideConfig(side, new StorageComponentStackHandlerBuilder.SideConfigBuilder(
+                    InventoryConfigMode.fromIndex(sideTag.getInt(CONFIG_MODE))
             ));
         }
 
@@ -89,11 +112,16 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
         return this.stackHandler;
     }
 
-    protected ItemStackHandler createMainHandler() {
-        return new ItemStackHandler(this.getStackHandlerConfiguration().getSize()) {
+    protected ItemStackHandler createMainHandler(StackHandlerConfiguration configuration) {
+        return new ItemStackHandler(configuration.getSize()) {
             @NotNull
             @Override
             public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+                final var slotConfiguration = configuration.getSlotConfiguration().get(slot);
+                if (!slotConfiguration.getMode().isAllowInsert()) {
+                    return ItemStack.EMPTY;
+                }
+
                 var copiedStack = stack.copy();
 
                 var returnStack = super.insertItem(slot, copiedStack, simulate);
@@ -109,6 +137,11 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
             @NotNull
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                final var slotConfiguration = configuration.getSlotConfiguration().get(slot);
+                if (!slotConfiguration.getMode().isAllowExtract()) {
+                    return ItemStack.EMPTY;
+                }
+
                 var returnStack = super.extractItem(slot, amount, simulate);
 
                 if (!simulate) {
@@ -120,10 +153,7 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
 
             @Override
             protected int getStackLimit(int slot, @NotNull ItemStack stack) {
-                final var slotConfiguration = StackHandlerProvider.this.stackHandlerConfiguration
-                        .getSlotConfiguration()
-                        .get(slot);
-
+                final var slotConfiguration = configuration.getSlotConfiguration().get(slot);
                 if (slotConfiguration == null) {
                     return stack.getMaxStackSize();
                 }

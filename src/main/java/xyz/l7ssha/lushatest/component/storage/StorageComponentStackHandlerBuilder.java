@@ -1,5 +1,7 @@
 package xyz.l7ssha.lushatest.component.storage;
 
+import net.minecraft.core.Direction;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,12 +9,14 @@ public final class StorageComponentStackHandlerBuilder {
 
     private final Map<Integer, SlotConfigBuilder> slots = new HashMap<>();
 
+    private final Map<Direction, SideConfigBuilder> sides = new HashMap<>();
+
     private int size = 1;
 
     public static class SlotConfigBuilder {
-        private int slotLimit;
+        private final int slotLimit;
 
-        private InventoryConfigMode mode;
+        private final InventoryConfigMode mode;
 
         public SlotConfigBuilder() {
             this.slotLimit = 64;
@@ -28,18 +32,24 @@ public final class StorageComponentStackHandlerBuilder {
             return slotLimit;
         }
 
-        public SlotConfigBuilder setSlotLimit(int slotLimit) {
-            this.slotLimit = slotLimit;
-            return this;
+        public InventoryConfigMode getMode() {
+            return mode;
+        }
+    }
+
+    public static class SideConfigBuilder {
+        private final InventoryConfigMode mode;
+
+        public SideConfigBuilder(InventoryConfigMode mode) {
+            this.mode = mode;
+        }
+
+        public SideConfigBuilder() {
+            this(InventoryConfigMode.NONE);
         }
 
         public InventoryConfigMode getMode() {
             return mode;
-        }
-
-        public SlotConfigBuilder setMode(InventoryConfigMode mode) {
-            this.mode = mode;
-            return this;
         }
     }
 
@@ -47,12 +57,18 @@ public final class StorageComponentStackHandlerBuilder {
         final var builder = new StorageComponentStackHandlerBuilder();
 
         builder.setSize(configuration.getSize());
-        for (final var slotConfigEntry: configuration.getSlotConfiguration().entrySet()) {
-            builder.addSlot(
+
+        for (final var slotConfigEntry : configuration.getSlotConfiguration().entrySet()) {
+            builder.addSlotConfig(
                     slotConfigEntry.getKey(),
-                    new StorageComponentStackHandlerBuilder.SlotConfigBuilder()
-                            .setSlotLimit(slotConfigEntry.getValue().getSlotLimit())
-                            .setMode(slotConfigEntry.getValue().getMode())
+                    new StorageComponentStackHandlerBuilder.SlotConfigBuilder(slotConfigEntry.getValue().getSlotLimit(), slotConfigEntry.getValue().getMode())
+            );
+        }
+
+        for (final var sideConfigEntry : configuration.getSideConfiguration().entrySet()) {
+            builder.addSideConfig(
+                    sideConfigEntry.getKey(),
+                    new StorageComponentStackHandlerBuilder.SideConfigBuilder(sideConfigEntry.getValue().getMode())
             );
         }
 
@@ -61,6 +77,10 @@ public final class StorageComponentStackHandlerBuilder {
 
     public Map<Integer, SlotConfigBuilder> getSlots() {
         return slots;
+    }
+
+    public Map<Direction, SideConfigBuilder> getSides() {
+        return sides;
     }
 
     public int getSize() {
@@ -72,8 +92,22 @@ public final class StorageComponentStackHandlerBuilder {
         return this;
     }
 
-    public StorageComponentStackHandlerBuilder addSlot(int id, SlotConfigBuilder slotConfigBuilder) {
+    public StorageComponentStackHandlerBuilder addSlotConfig(int id, SlotConfigBuilder slotConfigBuilder) {
         this.slots.put(id, slotConfigBuilder);
+
+        return this;
+    }
+
+    public StorageComponentStackHandlerBuilder addSideConfig(Direction direction, SideConfigBuilder sideConfigBuilder) {
+        this.sides.put(direction, sideConfigBuilder);
+
+        return this;
+    }
+
+    public StorageComponentStackHandlerBuilder setCommonSideConfig(SideConfigBuilder sideConfigBuilder) {
+        for (final var side : Direction.values()) {
+            this.addSideConfig(side, sideConfigBuilder);
+        }
 
         return this;
     }

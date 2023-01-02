@@ -31,8 +31,9 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
                 new StorageCapabilityComponent(
                         new StorageComponentStackHandlerBuilder()
                                 .setSize(2)
-                                .addSlot(0, new StorageComponentStackHandlerBuilder.SlotConfigBuilder().setSlotLimit(1).setMode(InventoryConfigMode.NONE))
-                                .addSlot(1, new StorageComponentStackHandlerBuilder.SlotConfigBuilder().setSlotLimit(64).setMode(InventoryConfigMode.OUTPUT))
+                                .addSlotConfig(0, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(1, InventoryConfigMode.NONE))
+                                .addSlotConfig(1, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(64, InventoryConfigMode.OUTPUT))
+                                .setCommonSideConfig(new StorageComponentStackHandlerBuilder.SideConfigBuilder())
                                 .build(),
                         this
                 )
@@ -105,8 +106,11 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
         }
 
         final var storageComponent = (StorageCapabilityComponent) this.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow();
-
         final var container = storageComponent.getAsSimpleContainer();
+
+        if (container.getItem(1).getCount() < this.getStackHandler().getSlotLimit(1)) {
+            return 0;
+        }
 
         final var recipe = level
                 .getRecipeManager()
