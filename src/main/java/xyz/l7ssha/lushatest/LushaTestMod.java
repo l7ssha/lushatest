@@ -9,10 +9,12 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import xyz.l7ssha.lushatest.commands.ConfigCommand;
+import xyz.l7ssha.lushatest.network.LushaNetworkChannel;
 import xyz.l7ssha.lushatest.registration.*;
 import xyz.l7ssha.lushatest.screen.TestBlockContainerScreen;
 
@@ -36,6 +38,7 @@ public class LushaTestMod
         final var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modEventBus.addListener(this::clientSetup);
+        modEventBus.addListener(this::commonSetup);
 
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -50,8 +53,12 @@ public class LushaTestMod
         MenuScreens.register(ContainerRegistry.TEST_BLOCK_CONTAINER.get(), TestBlockContainerScreen::new);
     }
 
+    public void commonSetup(final FMLCommonSetupEvent event) {
+        LushaNetworkChannel.register();
+    }
+
     @SubscribeEvent
-    public static void registerCommands(RegisterCommandsEvent event){
+    public static void registerCommands(RegisterCommandsEvent event) {
         ConfigCommand.register(event.getDispatcher());
     }
 }

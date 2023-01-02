@@ -18,6 +18,7 @@ import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 public class TestBlockContainer extends LushaTestContainerMenu {
     private final ContainerLevelAccess containerLevelAccess;
     private final ContainerData containerData;
+    private final BlockPos blockPos;
 
     public TestBlockContainer(int id, Inventory playerInv) {
         this(id, playerInv, new ItemStackHandler(2), BlockPos.ZERO, new SimpleContainerData(2));
@@ -27,6 +28,7 @@ public class TestBlockContainer extends LushaTestContainerMenu {
         super(ContainerRegistry.TEST_BLOCK_CONTAINER.get(), id);
         this.containerLevelAccess = ContainerLevelAccess.create(playerInv.player.level, pos);
         this.containerData = containerData;
+        this.blockPos = pos;
 
         final var allowedItems = playerInv.player.getLevel()
                 .getRecipeManager()
@@ -47,6 +49,10 @@ public class TestBlockContainer extends LushaTestContainerMenu {
 
     public ContainerData getContainerData() {
         return this.containerData;
+    }
+
+    public BlockPos getBlockPos() {
+        return blockPos;
     }
 
     @Override

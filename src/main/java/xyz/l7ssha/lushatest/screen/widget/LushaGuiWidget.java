@@ -28,7 +28,10 @@ public class LushaGuiWidget extends GuiComponent implements Widget, GuiEventList
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int p_94739_) {
-        return children.stream().filter(child -> child instanceof AbstractButton).anyMatch(button -> ((AbstractButton)button).mouseClicked(mouseX, mouseY, p_94739_));
+        return children
+                .stream()
+                .filter(child -> child instanceof AbstractButton)
+                .anyMatch(button -> ((AbstractButton) button).mouseClicked(mouseX, mouseY, p_94739_));
     }
 
     @Override

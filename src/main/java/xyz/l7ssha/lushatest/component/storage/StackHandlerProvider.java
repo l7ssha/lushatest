@@ -25,7 +25,6 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
 
     private final T blockEntity;
 
-
     public StackHandlerProvider(StackHandlerConfiguration stackHandlerConfiguration, T blockEntity) {
         this.stackHandlerConfiguration = stackHandlerConfiguration;
         this.blockEntity = blockEntity;
@@ -39,7 +38,7 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
 
     public void setStackHandlerConfiguration(StackHandlerConfiguration stackHandlerConfiguration) {
         this.stackHandlerConfiguration = stackHandlerConfiguration;
-        this.blockEntity.updateBlockEntity(); // TODO: Thats probably not needed. To investigate
+        this.blockEntity.updateBlockEntity();
     }
 
     public LazyOptional<IItemHandler> getHandlerForSide(Direction direction) {
