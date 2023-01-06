@@ -50,7 +50,7 @@ public class LushaTileEntityInventorySideUpdateConfigPacket {
                 throw new RuntimeException("Missing block entity");
             }
 
-            final var storageComponent = (StorageCapabilityComponent) tileEntity.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            final var storageComponent = tileEntity.<StorageCapabilityComponent>getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
                     .orElseThrow(() -> new RuntimeException("Missing item handler component"));
 
             storageComponent.getStackHandlerProvider().setStackHandlerConfiguration(

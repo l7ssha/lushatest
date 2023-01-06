@@ -54,7 +54,7 @@ final public class TestBlock extends Block implements EntityBlock, IForgeBlock {
         final var container = new SimpleMenuProvider(TestBlockContainer.getServerContainer(blockEntity, blockPos), new TranslatableComponent("lushatest.blockduplicator"));
         NetworkHooks.openGui((ServerPlayer) player, container, blockPos);
 
-        final var configuration = ((StorageCapabilityComponent) blockEntity.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow()).getStackHandlerProvider().getStackHandlerConfiguration();
+        final var configuration = blockEntity.<StorageCapabilityComponent>getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow().getStackHandlerProvider().getStackHandlerConfiguration();
         for (final var direction : Direction.values()) {
             final var config = configuration.getSideConfiguration().get(direction);
 

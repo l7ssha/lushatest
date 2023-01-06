@@ -76,7 +76,7 @@ public class ConfigCommand {
             return -1;
         }
 
-        final var itemHandlerComponent = testTileEntity.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        final var itemHandlerComponent = testTileEntity.<StorageCapabilityComponent>getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         if (itemHandlerComponent.isEmpty()) {
             context.getSource().sendFailure(new TextComponent("Block cannot be configured since it doesn't have inventory!"));
             return -1;
@@ -84,7 +84,7 @@ public class ConfigCommand {
 
         final var modeLabel = context.getArgument("mode", String.class);
 
-        final var stackHandlerProvider = ((StorageCapabilityComponent)itemHandlerComponent.get()).getStackHandlerProvider();
+        final var stackHandlerProvider = itemHandlerComponent.get().getStackHandlerProvider();
 
         final var configurationBuilder = StorageComponentStackHandlerBuilder.fromConfig(stackHandlerProvider.getStackHandlerConfiguration());
         configurationBuilder.addSideConfig(rayHit.getDirection(), new StorageComponentStackHandlerBuilder.SideConfigBuilder(InventoryConfigMode.fromLabel(modeLabel)));

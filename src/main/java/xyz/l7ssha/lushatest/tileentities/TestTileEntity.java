@@ -46,11 +46,11 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
     }
 
     public IEnergyStorage getEnergyStorage() {
-        return this.getComponent(CapabilityEnergy.ENERGY).orElseThrow().getComponent();
+        return this.getRawComponent(CapabilityEnergy.ENERGY).orElseThrow().getComponent();
     }
 
     public IItemHandler getStackHandler() {
-        return this.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow().getComponent();
+        return this.getRawComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow().getComponent();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
     }
 
     protected void processMachine() {
-        final var storageComponent = (StorageCapabilityComponent) this.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow();
+        final var storageComponent = this.<StorageCapabilityComponent>getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow();
 
         final var container = storageComponent.getAsSimpleContainer();
 
@@ -105,7 +105,7 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
             return 0;
         }
 
-        final var storageComponent = (StorageCapabilityComponent) this.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow();
+        final var storageComponent = this.<StorageCapabilityComponent>getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow();
         final var container = storageComponent.getAsSimpleContainer();
 
         if (container.getItem(1).getCount() < this.getStackHandler().getSlotLimit(1)) {

@@ -25,8 +25,12 @@ public class LushaComponentBlockEntity extends LushaTestBlockEntity {
         this.components = new HashMap<>();
     }
 
-    public <T> Optional<ICapabilityComponent<T>> getComponent(Capability<T> cap) {
+    public <T> Optional<ICapabilityComponent<T>> getRawComponent(Capability<T> cap) {
         return Optional.ofNullable((ICapabilityComponent<T>) components.get(cap));
+    }
+
+    public <T extends ICapabilityComponent<?>> Optional<T> getComponent(Capability<?> cap) {
+        return Optional.ofNullable((T) components.get(cap));
     }
 
     public Collection<ICapabilityComponent<?>> getComponents() {
