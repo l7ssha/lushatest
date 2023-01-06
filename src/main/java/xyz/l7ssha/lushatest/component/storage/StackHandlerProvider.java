@@ -116,11 +116,6 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
             @NotNull
             @Override
             public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                final var slotConfiguration = configuration.getSlotConfiguration().get(slot);
-                if (!slotConfiguration.getMode().isAllowInsert()) {
-                    return ItemStack.EMPTY;
-                }
-
                 var copiedStack = stack.copy();
 
                 var returnStack = super.insertItem(slot, copiedStack, simulate);
@@ -136,11 +131,6 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
             @NotNull
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                final var slotConfiguration = configuration.getSlotConfiguration().get(slot);
-                if (!slotConfiguration.getMode().isAllowExtract()) {
-                    return ItemStack.EMPTY;
-                }
-
                 var returnStack = super.extractItem(slot, amount, simulate);
 
                 if (!simulate) {

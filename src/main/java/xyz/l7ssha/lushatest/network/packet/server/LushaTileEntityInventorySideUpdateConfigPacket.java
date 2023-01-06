@@ -1,13 +1,17 @@
-package xyz.l7ssha.lushatest.network.packet;
+package xyz.l7ssha.lushatest.network.packet.server;
 
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.network.NetworkEvent;
+import org.slf4j.Logger;
 import xyz.l7ssha.lushatest.component.storage.InventoryConfigMode;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
 import xyz.l7ssha.lushatest.container.TestBlockContainer;
+import xyz.l7ssha.lushatest.network.LushaNetworkChannel;
+import xyz.l7ssha.lushatest.network.packet.client.LushaTileEntityInventorySideGuiSyncPacket;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 
 import java.util.function.Supplier;
@@ -15,6 +19,8 @@ import java.util.function.Supplier;
 public class LushaTileEntityInventorySideUpdateConfigPacket {
     private final Direction direction;
     private final InventoryConfigMode mode;
+
+    private final static Logger logger = LogUtils.getLogger();
 
     public LushaTileEntityInventorySideUpdateConfigPacket(Direction direction, InventoryConfigMode mode) {
         this.direction = direction;
@@ -52,6 +58,9 @@ public class LushaTileEntityInventorySideUpdateConfigPacket {
                             .addSideConfig(packet.direction, new StorageComponentStackHandlerBuilder.SideConfigBuilder(packet.mode))
                             .build()
             );
+
+            logger.debug("Handled LushaTileEntityInventorySideUpdateConfigPacket; (direction: %s, mode: %s)".formatted(packet.direction.getName(), packet.mode.getLabel()));
+            LushaNetworkChannel.sendToPlayer(context.getSender(), new LushaTileEntityInventorySideGuiSyncPacket(packet.direction, packet.mode));
 
             context.setPacketHandled(true);
         });

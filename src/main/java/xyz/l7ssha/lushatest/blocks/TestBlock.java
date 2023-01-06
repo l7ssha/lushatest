@@ -1,6 +1,7 @@
 package xyz.l7ssha.lushatest.blocks;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -17,10 +18,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.extensions.IForgeBlock;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.container.TestBlockContainer;
+import xyz.l7ssha.lushatest.network.LushaNetworkChannel;
+import xyz.l7ssha.lushatest.network.packet.client.LushaTileEntityInventorySideGuiSyncPacket;
 import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 
@@ -48,6 +53,13 @@ final public class TestBlock extends Block implements EntityBlock, IForgeBlock {
 
         final var container = new SimpleMenuProvider(TestBlockContainer.getServerContainer(blockEntity, blockPos), new TranslatableComponent("lushatest.blockduplicator"));
         NetworkHooks.openGui((ServerPlayer) player, container, blockPos);
+
+        final var configuration = ((StorageCapabilityComponent) blockEntity.getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow()).getStackHandlerProvider().getStackHandlerConfiguration();
+        for (final var direction : Direction.values()) {
+            final var config = configuration.getSideConfiguration().get(direction);
+
+            LushaNetworkChannel.sendToPlayer((ServerPlayer) player, new LushaTileEntityInventorySideGuiSyncPacket(direction, config.getMode()));
+        }
 
         return InteractionResult.PASS;
     }

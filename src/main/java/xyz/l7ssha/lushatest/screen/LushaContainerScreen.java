@@ -24,6 +24,7 @@ public abstract class LushaContainerScreen<T extends AbstractContainerMenu> exte
     @Override
     public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         super.render(stack, mouseX, mouseY, partialTicks);
+        super.clearWidgets();
 
         this.renderTooltip(stack, mouseX, mouseY);
     }

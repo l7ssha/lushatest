@@ -25,6 +25,11 @@ public class WrappedItemStackHandler extends ItemStackHandler {
     @NotNull
     @Override
     public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        final var slotConfiguration = configuration.getSlotConfiguration().get(slot);
+        if (!slotConfiguration.getMode().isAllowInsert()) {
+            return ItemStack.EMPTY;
+        }
+
         final var sideConfiguration = this.configuration.getSideConfiguration().get(this.direction);
         if (sideConfiguration != null && !sideConfiguration.getMode().isAllowInsert()) {
             return ItemStack.EMPTY;
@@ -36,6 +41,11 @@ public class WrappedItemStackHandler extends ItemStackHandler {
     @NotNull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        final var slotConfiguration = configuration.getSlotConfiguration().get(slot);
+        if (!slotConfiguration.getMode().isAllowExtract()) {
+            return ItemStack.EMPTY;
+        }
+
         final var sideConfiguration = this.configuration.getSideConfiguration().get(this.direction);
         if (sideConfiguration != null && !sideConfiguration.getMode().isAllowExtract()) {
             return ItemStack.EMPTY;

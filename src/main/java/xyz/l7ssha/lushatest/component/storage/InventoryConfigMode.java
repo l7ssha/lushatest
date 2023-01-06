@@ -3,17 +3,20 @@ package xyz.l7ssha.lushatest.component.storage;
 import java.util.Arrays;
 
 public enum InventoryConfigMode {
-    NONE(0, "None"),
-    INPUT(1, "Input"),
-    INPUT_OUTPUT(2, "Input/Output"),
-    OUTPUT(3, "Output");
+    NONE(0, "None", "N"),
+    INPUT(1, "Input", "I"),
+    INPUT_OUTPUT(2, "Input/Output", "IO"),
+    OUTPUT(3, "Output", "O");
 
     private final int index;
     private final String label;
 
-    InventoryConfigMode(int value, String label) {
+    private final String shortLabel;
+
+    InventoryConfigMode(int value, String label, String shortLabel) {
         this.index = value;
         this.label = label;
+        this.shortLabel = shortLabel;
     }
 
     public static InventoryConfigMode fromIndex(int index) {
@@ -32,6 +35,10 @@ public enum InventoryConfigMode {
         return label;
     }
 
+    public String getShortLabel() {
+        return shortLabel;
+    }
+
     public boolean isAllowInsert() {
         return switch (this) {
             case INPUT, INPUT_OUTPUT -> true;
@@ -44,5 +51,13 @@ public enum InventoryConfigMode {
             case OUTPUT, INPUT_OUTPUT -> true;
             default -> false;
         };
+    }
+
+    public InventoryConfigMode next() {
+        if (this == OUTPUT) {
+            return NONE;
+        }
+
+        return InventoryConfigMode.fromIndex(this.index + 1);
     }
 }
