@@ -61,9 +61,8 @@ public class TestBlockContainerScreen extends LushaContainerScreen<TestBlockCont
 
     protected String getStoredEnergyText() {
         final var storedEnergy = this.menu.getContainerData().get(0);
-        final var storedEnergyPercentage = (double) storedEnergy / TestTileEntity.ENERGY_STORAGE_MAX * 100;
 
-        return Utils.getStoredEnergyText(storedEnergy, storedEnergyPercentage);
+        return Utils.getStoredEnergyText(storedEnergy);
     }
 
     public void updateContainerConfig(Direction direction, InventoryConfigMode mode) {
