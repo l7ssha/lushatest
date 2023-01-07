@@ -16,12 +16,12 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class DataGenRecipeProvider extends RecipeProvider {
-    protected final Map<Item, Integer> testTileEntityRecipeMap = Map.ofEntries(
-            Map.entry(Items.COAL, Integer.MAX_VALUE / 256),
-            Map.entry(Items.IRON_INGOT, Integer.MAX_VALUE / 64),
-            Map.entry(Items.GOLD_INGOT, Integer.MAX_VALUE / 48),
-            Map.entry(Items.DIAMOND, Integer.MAX_VALUE / 32),
-            Map.entry(Items.EMERALD, Integer.MAX_VALUE / 16),
+    protected final Map<Item, Integer> testTileEntityRecipeMap = Map.ofEntries( // TODO: Better balanced recipes
+            Map.entry(Items.COAL, Integer.MAX_VALUE / 128),
+            Map.entry(Items.IRON_INGOT, Integer.MAX_VALUE / 48),
+            Map.entry(Items.GOLD_INGOT, Integer.MAX_VALUE / 32),
+            Map.entry(Items.DIAMOND, Integer.MAX_VALUE / 12),
+            Map.entry(Items.EMERALD, Integer.MAX_VALUE / 8),
             Map.entry(Items.NETHERITE_SCRAP, Integer.MAX_VALUE / 2)
     );
 
@@ -31,7 +31,7 @@ public class DataGenRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildCraftingRecipes(@NotNull Consumer<FinishedRecipe> recipeConsumer) {
-        for(final var recipeEntry: testTileEntityRecipeMap.entrySet()) {
+        for (final var recipeEntry : testTileEntityRecipeMap.entrySet()) {
             (new TestTileRecipeBuilder(recipeEntry.getKey(), recipeEntry.getValue())).save(recipeConsumer);
         }
 
