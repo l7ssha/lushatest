@@ -6,7 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.network.NetworkEvent;
 import org.slf4j.Logger;
-import xyz.l7ssha.lushatest.component.storage.InventoryConfigMode;
+import xyz.l7ssha.lushatest.component.AccessModeConfig;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
 import xyz.l7ssha.lushatest.container.TestBlockContainerMenu;
@@ -18,11 +18,11 @@ import java.util.function.Supplier;
 
 public class LushaTileEntityInvetorySideConfigServerSyncPacket {
     private final Direction direction;
-    private final InventoryConfigMode mode;
+    private final AccessModeConfig mode;
 
     private final static Logger logger = LogUtils.getLogger();
 
-    public LushaTileEntityInvetorySideConfigServerSyncPacket(Direction direction, InventoryConfigMode mode) {
+    public LushaTileEntityInvetorySideConfigServerSyncPacket(Direction direction, AccessModeConfig mode) {
         this.direction = direction;
         this.mode = mode;
     }
@@ -34,7 +34,7 @@ public class LushaTileEntityInvetorySideConfigServerSyncPacket {
 
     public static LushaTileEntityInvetorySideConfigServerSyncPacket fromBytes(FriendlyByteBuf buf) {
         final var direction = Direction.byName(buf.readUtf());
-        final var mode = InventoryConfigMode.fromIndex(buf.readInt());
+        final var mode = AccessModeConfig.fromIndex(buf.readInt());
 
         return new LushaTileEntityInvetorySideConfigServerSyncPacket(direction, mode);
     }

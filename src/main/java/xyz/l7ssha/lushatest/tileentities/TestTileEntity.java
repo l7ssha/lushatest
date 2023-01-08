@@ -15,8 +15,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.l7ssha.lushatest.component.AccessModeConfig;
 import xyz.l7ssha.lushatest.component.energy.EnergyCapabilityComponent;
-import xyz.l7ssha.lushatest.component.storage.InventoryConfigMode;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
 import xyz.l7ssha.lushatest.container.TestBlockContainerMenu;
@@ -38,8 +38,8 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
                 new StorageCapabilityComponent(
                         new StorageComponentStackHandlerBuilder()
                                 .setSize(2)
-                                .addSlotConfig(0, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(1, InventoryConfigMode.NONE))
-                                .addSlotConfig(1, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(64, InventoryConfigMode.OUTPUT))
+                                .addSlotConfig(0, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(1, AccessModeConfig.NONE))
+                                .addSlotConfig(1, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(64, AccessModeConfig.OUTPUT))
                                 .setCommonSideConfig(new StorageComponentStackHandlerBuilder.SideConfigBuilder())
                                 .build(),
                         this

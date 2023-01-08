@@ -7,6 +7,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
+import xyz.l7ssha.lushatest.component.AccessModeConfig;
 import xyz.l7ssha.lushatest.core.LushaTestBlockEntity;
 
 public class StackHandlerProvider<T extends LushaTestBlockEntity> {
@@ -90,7 +91,7 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
 
             configBuilder.addSlotConfig(i, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(
                     slotTag.getInt(CONFIG_STACK_LIMIT),
-                    InventoryConfigMode.fromIndex(slotTag.getInt(CONFIG_MODE))
+                    AccessModeConfig.fromIndex(slotTag.getInt(CONFIG_MODE))
             ));
         }
 
@@ -98,7 +99,7 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
             final var sideTag = configurationTag.getCompound(CONFIG_SIDE_PATTERN.formatted(side.getName()));
 
             configBuilder.addSideConfig(side, new StorageComponentStackHandlerBuilder.SideConfigBuilder(
-                    InventoryConfigMode.fromIndex(sideTag.getInt(CONFIG_MODE))
+                    AccessModeConfig.fromIndex(sideTag.getInt(CONFIG_MODE))
             ));
         }
 

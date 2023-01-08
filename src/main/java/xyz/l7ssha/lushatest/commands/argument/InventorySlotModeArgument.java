@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import xyz.l7ssha.lushatest.component.storage.InventoryConfigMode;
+import xyz.l7ssha.lushatest.component.AccessModeConfig;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -19,7 +19,7 @@ public class InventorySlotModeArgument implements ArgumentType<String> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        for (final var inventoryConfig : InventoryConfigMode.values()) {
+        for (final var inventoryConfig : AccessModeConfig.values()) {
             builder.suggest(inventoryConfig.getLabel());
         }
 

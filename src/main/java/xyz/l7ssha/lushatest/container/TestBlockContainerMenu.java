@@ -16,7 +16,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
-import xyz.l7ssha.lushatest.component.storage.InventoryConfigMode;
+import xyz.l7ssha.lushatest.component.AccessModeConfig;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.container.slot.ItemRestrictedSlot;
 import xyz.l7ssha.lushatest.container.slot.ReadonlySlot;
@@ -62,7 +62,7 @@ public class TestBlockContainerMenu extends LushaTestContainerMenu {
         return blockEntity;
     }
 
-    public Map<Direction, InventoryConfigMode> getInventoryConfig() {
+    public Map<Direction, AccessModeConfig> getInventoryConfig() {
         final var configuration = ((TestTileEntity) blockEntity).<StorageCapabilityComponent>getComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow().getStackHandlerProvider().getStackHandlerConfiguration();
 
         return configuration.getSideConfigurationDirectly();

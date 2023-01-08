@@ -1,6 +1,7 @@
 package xyz.l7ssha.lushatest.component.storage;
 
 import net.minecraft.core.Direction;
+import xyz.l7ssha.lushatest.component.AccessModeConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,14 +18,14 @@ public class StackHandlerConfiguration {
     public static class SlotConfiguration {
         private final int slotLimit;
 
-        private final InventoryConfigMode mode;
+        private final AccessModeConfig mode;
 
-        public SlotConfiguration(int slotLimit, InventoryConfigMode mode) {
+        public SlotConfiguration(int slotLimit, AccessModeConfig mode) {
             this.slotLimit = slotLimit;
             this.mode = mode;
         }
 
-        public InventoryConfigMode getMode() {
+        public AccessModeConfig getMode() {
             return mode;
         }
 
@@ -34,13 +35,13 @@ public class StackHandlerConfiguration {
     }
 
     public static class SideConfiguration {
-        private final InventoryConfigMode mode;
+        private final AccessModeConfig mode;
 
-        public SideConfiguration(InventoryConfigMode mode) {
+        public SideConfiguration(AccessModeConfig mode) {
             this.mode = mode;
         }
 
-        public InventoryConfigMode getMode() {
+        public AccessModeConfig getMode() {
             return mode;
         }
     }
@@ -73,7 +74,7 @@ public class StackHandlerConfiguration {
         return sideConfiguration;
     }
 
-    public Map<Direction, InventoryConfigMode> getSideConfigurationDirectly() {
+    public Map<Direction, AccessModeConfig> getSideConfigurationDirectly() {
         return sideConfiguration.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entrySet -> entrySet.getValue().getMode()));
     }
 

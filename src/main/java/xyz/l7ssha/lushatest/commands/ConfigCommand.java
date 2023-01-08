@@ -11,7 +11,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.Nullable;
 import xyz.l7ssha.lushatest.commands.argument.InventorySlotModeArgument;
-import xyz.l7ssha.lushatest.component.storage.InventoryConfigMode;
+import xyz.l7ssha.lushatest.component.AccessModeConfig;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
 import xyz.l7ssha.lushatest.core.LushaComponentBlockEntity;
@@ -73,7 +73,7 @@ public class ConfigCommand {
         final var stackHandlerProvider = itemHandlerComponent.get().getStackHandlerProvider();
 
         final var configurationBuilder = StorageComponentStackHandlerBuilder.fromConfig(stackHandlerProvider.getStackHandlerConfiguration());
-        configurationBuilder.addSideConfig(locateResult.blockHitResult.getDirection(), new StorageComponentStackHandlerBuilder.SideConfigBuilder(InventoryConfigMode.fromLabel(modeLabel)));
+        configurationBuilder.addSideConfig(locateResult.blockHitResult.getDirection(), new StorageComponentStackHandlerBuilder.SideConfigBuilder(AccessModeConfig.fromLabel(modeLabel)));
 
         stackHandlerProvider.setStackHandlerConfiguration(configurationBuilder.build());
 

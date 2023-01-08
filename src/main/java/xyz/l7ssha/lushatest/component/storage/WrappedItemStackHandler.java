@@ -4,6 +4,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
+import xyz.l7ssha.lushatest.component.AccessModeConfig;
 
 public class WrappedItemStackHandler extends ItemStackHandler {
     private final StackHandlerConfiguration configuration;
@@ -19,7 +20,7 @@ public class WrappedItemStackHandler extends ItemStackHandler {
     }
 
     public boolean isNoneMode() {
-        return configuration.getSideConfiguration().get(this.direction).getMode() == InventoryConfigMode.NONE;
+        return configuration.getSideConfiguration().get(this.direction).getMode() == AccessModeConfig.NONE;
     }
 
     @NotNull
