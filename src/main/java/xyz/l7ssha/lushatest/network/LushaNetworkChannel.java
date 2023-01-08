@@ -50,6 +50,15 @@ public class LushaNetworkChannel {
     }
 
     public static <T> void sendToAllNear(BlockEntity entity, T message) {
-        CHANNEL_INSTANCE.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(entity.getBlockPos().getX(), entity.getBlockPos().getY(), entity.getBlockPos().getZ(), 16, entity.getLevel().dimension())), message);
+        CHANNEL_INSTANCE.send(
+                PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(
+                        entity.getBlockPos().getX(),
+                        entity.getBlockPos().getY(),
+                        entity.getBlockPos().getZ(),
+                        16,
+                        entity.getLevel().dimension()
+                )),
+                message
+        );
     }
 }

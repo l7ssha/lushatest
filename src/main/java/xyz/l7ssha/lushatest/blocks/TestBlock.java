@@ -2,6 +2,7 @@ package xyz.l7ssha.lushatest.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -47,6 +48,15 @@ final public class TestBlock extends Block implements EntityBlock, IForgeBlock {
         return InteractionResult.PASS;
     }
 
+    @Override
+    public void onRemove(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull BlockState newBlockState, boolean isMoving) {
+        if (level.getBlockEntity(blockPos) instanceof TestTileEntity entity) {
+            Containers.dropContents(level, blockPos, entity.getItemHandlerComponent().getAsSimpleContainer());
+        }
+
+        super.onRemove(blockState, level, blockPos, newBlockState, isMoving);
+    }
+
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level world, @NotNull BlockState blockState, @NotNull BlockEntityType<T> type) {
@@ -59,13 +69,16 @@ final public class TestBlock extends Block implements EntityBlock, IForgeBlock {
 
     @Override
     public void neighborChanged(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos pos, @NotNull Block block, @NotNull BlockPos posChanged, boolean b) {
-        final var power = level.getDirectSignalTo(pos);
+        if (level.isClientSide()) {
+            return;
+        }
 
         final var blockEntity = (TestTileEntity) level.getBlockEntity(pos);
         if (blockEntity == null) {
             return;
         }
 
+        final var power = level.getDirectSignalTo(pos);
         blockEntity.setActiveState(power == 15);
     }
 }

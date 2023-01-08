@@ -48,6 +48,7 @@ public class LushaTileEntityInventorySideConfigClientSyncPacket {
         context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             if (Minecraft.getInstance().level.getBlockEntity(packet.blockPos) instanceof TestTileEntity entity) {
                 final var configuration = entity.<StorageCapabilityComponent>getComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow().getStackHandlerProvider().getStackHandlerConfiguration();
+
                 configuration.getSideConfiguration().put(packet.direction, new StackHandlerConfiguration.SideConfiguration(packet.mode));
             }
 

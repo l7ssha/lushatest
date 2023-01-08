@@ -65,6 +65,10 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
         return this.getRawComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow().getComponent();
     }
 
+    public StorageCapabilityComponent getItemHandlerComponent() {
+        return this.<StorageCapabilityComponent>getComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow();
+    }
+
     @Override
     public void tick(@NotNull Level world, @NotNull BlockPos blockPos, @NotNull BlockState blockState, @NotNull TestTileEntity tile) {
         super.tick(world, blockPos, blockState, tile);
