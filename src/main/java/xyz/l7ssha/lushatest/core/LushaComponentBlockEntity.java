@@ -3,6 +3,8 @@ package xyz.l7ssha.lushatest.core;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -62,8 +64,34 @@ public class LushaComponentBlockEntity extends LushaTestBlockEntity {
     protected void saveAdditional(@NotNull CompoundTag tag) {
         super.saveAdditional(tag);
 
-        for(final var component: this.getComponents()) {
+        for (final var component : this.getComponents()) {
             component.saveAdditional(tag);
+        }
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
+
+        for (final var component : this.getComponents()) {
+            component.load(tag);
+        }
+    }
+
+    @Override
+    public @NotNull CompoundTag getUpdateTag() {
+        final var nbt = serializeNBT();
+        this.saveAdditional(nbt);
+
+        return nbt;
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        super.onDataPacket(net, pkt);
+
+        for (final var component : this.getComponents()) {
+            component.load(pkt.getTag());
         }
     }
 

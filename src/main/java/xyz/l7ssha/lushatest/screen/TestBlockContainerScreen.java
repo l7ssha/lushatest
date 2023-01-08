@@ -1,26 +1,18 @@
 package xyz.l7ssha.lushatest.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import xyz.l7ssha.lushatest.LushaTestMod;
-import xyz.l7ssha.lushatest.component.storage.InventoryConfigMode;
-import xyz.l7ssha.lushatest.container.TestBlockContainer;
+import xyz.l7ssha.lushatest.container.TestBlockContainerMenu;
 import xyz.l7ssha.lushatest.screen.widget.InventorySidedConfigWidget;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 import xyz.l7ssha.lushatest.utils.Utils;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class TestBlockContainerScreen extends LushaContainerScreen<TestBlockContainer> {
-    private final Map<Direction, InventoryConfigMode> inventoryConfig = new HashMap<>();
-
-    public TestBlockContainerScreen(TestBlockContainer container, Inventory playerInv, Component title) {
+public class TestBlockContainerScreen extends LushaContainerScreen<TestBlockContainerMenu> {
+    public TestBlockContainerScreen(TestBlockContainerMenu container, Inventory playerInv, Component title) {
         super(container, playerInv, title, new ResourceLocation(LushaTestMod.MOD_ID, "textures/gui/test_block_container.png"));
     }
 
@@ -30,15 +22,15 @@ public class TestBlockContainerScreen extends LushaContainerScreen<TestBlockCont
 
         final var currentProgress = this.menu.getContainerData().get(1);
         if (mouseX > this.leftPos + 57 && mouseX < this.leftPos + 57 + 30 && mouseY > this.topPos + 35 && mouseY < this.topPos + 36 + 18) {
-            this.renderTooltip(stack, new TextComponent(currentProgress + "%"), mouseX + 5, mouseY + 5);
+            this.renderTooltip(stack, Component.literal(currentProgress + "%"), mouseX + 5, mouseY + 5);
         }
 
         final var storedEnergyText = this.getStoredEnergyText();
         if (mouseX > this.leftPos + 136 && mouseX < this.leftPos + 146 + 25 && mouseY > this.topPos + 10 && mouseY < this.topPos + 36 + 36) {
-            this.renderTooltip(stack, new TextComponent(storedEnergyText), mouseX + 5, mouseY + 5);
+            this.renderTooltip(stack, Component.literal(storedEnergyText), mouseX + 5, mouseY + 5);
         }
 
-        this.addRenderableWidget(new InventorySidedConfigWidget(this.leftPos, this.topPos, this.inventoryConfig));
+        this.addRenderableWidget(new InventorySidedConfigWidget(this.leftPos, this.topPos, this.menu.getInventoryConfig()));
     }
 
     @Override
@@ -63,9 +55,5 @@ public class TestBlockContainerScreen extends LushaContainerScreen<TestBlockCont
         final var storedEnergy = this.menu.getContainerData().get(0);
 
         return Utils.getStoredEnergyText(storedEnergy);
-    }
-
-    public void updateContainerConfig(Direction direction, InventoryConfigMode mode) {
-        this.inventoryConfig.put(direction, mode);
     }
 }

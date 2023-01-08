@@ -4,6 +4,7 @@ import net.minecraft.core.Direction;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StackHandlerConfiguration {
 
@@ -70,6 +71,10 @@ public class StackHandlerConfiguration {
 
     public Map<Direction, SideConfiguration> getSideConfiguration() {
         return sideConfiguration;
+    }
+
+    public Map<Direction, InventoryConfigMode> getSideConfigurationDirectly() {
+        return sideConfiguration.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entrySet -> entrySet.getValue().getMode()));
     }
 
     public int getSize() {

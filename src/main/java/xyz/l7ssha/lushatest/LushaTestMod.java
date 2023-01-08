@@ -46,7 +46,8 @@ public class LushaTestMod
         BlockRegistry.setUp(modEventBus);
         BlockEntityRegistry.setUp(modEventBus);
         ContainerRegistry.setUp(modEventBus);
-        RecipeSerializerRegistry.register(modEventBus);
+        RecipeSerializerRegistry.setUp(modEventBus);
+        ArgumentTypeRegistry.setUp(modEventBus);
     }
 
     public void clientSetup(final FMLClientSetupEvent event) {

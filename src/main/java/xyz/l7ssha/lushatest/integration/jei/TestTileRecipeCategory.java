@@ -9,8 +9,6 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -35,12 +33,12 @@ public class TestTileRecipeCategory implements IRecipeCategory<TestTileEntityRec
 
     @Override
     public @NotNull RecipeType<TestTileEntityRecipe> getRecipeType() {
-        return IRecipeCategory.super.getRecipeType();
+        return new RecipeType<>(CATEGORY_ID, TestTileEntityRecipe.class);
     }
 
     @Override
     public @NotNull Component getTitle() {
-        return new TranslatableComponent("lushatest.blockduplicator");
+        return Component.translatable("lushatest.blockduplicator");
     }
 
     @Override
@@ -54,21 +52,11 @@ public class TestTileRecipeCategory implements IRecipeCategory<TestTileEntityRec
     }
 
     @Override
-    public ResourceLocation getUid() {
-        return CATEGORY_ID;
-    }
-
-    @Override
-    public Class<? extends TestTileEntityRecipe> getRecipeClass() {
-        return TestTileEntityRecipe.class;
-    }
-
-    @Override
     public @NotNull List<Component> getTooltipStrings(TestTileEntityRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         final var requiredEnergy = recipe.getRecipeCost();
 
         if (mouseX > 136 + 4 && mouseX < 146 + 25 + 4 && mouseY > 10 + 4 && mouseY < 36 + 36 + 4) {
-            return List.of(new TextComponent(Utils.getStoredEnergyText(requiredEnergy)));
+            return List.of(Component.literal(Utils.getStoredEnergyText(requiredEnergy)));
         }
 
         return List.of();

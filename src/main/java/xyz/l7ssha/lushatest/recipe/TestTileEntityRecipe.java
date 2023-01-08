@@ -12,8 +12,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import xyz.l7ssha.lushatest.LushaTestMod;
 
 public class TestTileEntityRecipe implements Recipe<SimpleContainer> {
     private final ResourceLocation id;
@@ -81,7 +79,6 @@ public class TestTileEntityRecipe implements Recipe<SimpleContainer> {
 
     public static class Serializer implements RecipeSerializer<TestTileEntityRecipe> {
         public static final Serializer INSTANCE = new Serializer();
-        public static final ResourceLocation ID = new ResourceLocation(LushaTestMod.MOD_ID, Type.ID);
 
         @Override
         public @NotNull TestTileEntityRecipe fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json) {
@@ -102,27 +99,6 @@ public class TestTileEntityRecipe implements Recipe<SimpleContainer> {
         public void toNetwork(@NotNull FriendlyByteBuf buf, TestTileEntityRecipe recipe) {
             recipe.getInputItem().toNetwork(buf);
             buf.writeInt(recipe.getRecipeCost());
-        }
-
-        @Override
-        public RecipeSerializer<?> setRegistryName(ResourceLocation name) {
-            return INSTANCE;
-        }
-
-        @Nullable
-        @Override
-        public ResourceLocation getRegistryName() {
-            return ID;
-        }
-
-        @Override
-        public Class<RecipeSerializer<?>> getRegistryType() {
-            return Serializer.castClass();
-        }
-
-        @SuppressWarnings("unchecked")
-        private static <G> Class<G> castClass() {
-            return (Class<G>) RecipeSerializer.class;
         }
     }
 }

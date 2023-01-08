@@ -15,7 +15,7 @@ public class RecipeSerializerRegistry {
     public static final RegistryObject<RecipeSerializer<TestTileEntityRecipe>> TEST_TILE_RECIPE_SERIALIZER =
             SERIALIZERS.register(TestTileEntityRecipe.Type.ID, () -> TestTileEntityRecipe.Serializer.INSTANCE);
 
-    public static void register(IEventBus eventBus) {
+    public static void setUp(IEventBus eventBus) {
         SERIALIZERS.register(eventBus);
     }
 }

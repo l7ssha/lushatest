@@ -9,7 +9,7 @@ import xyz.l7ssha.lushatest.LushaTestMod;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 
 public class BlockEntityRegistry {
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, LushaTestMod.MOD_ID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, LushaTestMod.MOD_ID);
 
     public static final RegistryObject<BlockEntityType<TestTileEntity>> TEST_BLOCK_ENTITY = BLOCK_ENTITY_REGISTRY.register("test_block",
             () -> BlockEntityType.Builder.of(TestTileEntity::new, BlockRegistry.TEST_BLOCK.get()).build(null));

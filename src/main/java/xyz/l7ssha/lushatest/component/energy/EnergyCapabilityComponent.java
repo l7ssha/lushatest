@@ -7,8 +7,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +31,7 @@ public class EnergyCapabilityComponent<T extends BlockEntity> implements ICapabi
 
     @Override
     public Capability<IEnergyStorage> getType() {
-        return CapabilityEnergy.ENERGY;
+        return ForgeCapabilities.ENERGY;
     }
 
     @Override
@@ -62,8 +62,8 @@ public class EnergyCapabilityComponent<T extends BlockEntity> implements ICapabi
                 continue;
             }
 
-            blockEntity.getCapability(CapabilityEnergy.ENERGY, direction.getOpposite()).ifPresent(storage -> {
-                if(!storage.canExtract()) {
+            blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).ifPresent(storage -> {
+                if (!storage.canExtract()) {
                     return;
                 }
 

@@ -3,6 +3,7 @@ package xyz.l7ssha.lushatest.datagen.recipe;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -62,7 +63,7 @@ public class TestTileRecipeBuilder implements RecipeBuilder {
       @Override
       public void serializeRecipeData(@NotNull JsonObject jsonObject) {
           final var inputJson = new JsonObject();
-          inputJson.addProperty("item", this.input.getRegistryName().toString());
+          inputJson.addProperty("item", Registry.ITEM.getKey(this.input).toString());
 
           jsonObject.add("input", inputJson);
           jsonObject.add("processingCost", new JsonPrimitive(this.processingCost));
@@ -71,7 +72,7 @@ public class TestTileRecipeBuilder implements RecipeBuilder {
       @Override
       public @NotNull ResourceLocation getId() {
           return new ResourceLocation(LushaTestMod.MOD_ID,
-                  this.input.getRegistryName().getPath() + "_testtile");
+                  Registry.ITEM.getKey(this.input).getPath() + "_testtile");
       }
 
       @Override

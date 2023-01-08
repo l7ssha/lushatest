@@ -1,24 +1,31 @@
 package xyz.l7ssha.lushatest.tileentities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xyz.l7ssha.lushatest.component.energy.EnergyCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.InventoryConfigMode;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
+import xyz.l7ssha.lushatest.container.TestBlockContainerMenu;
+import xyz.l7ssha.lushatest.container.data.TestBlockContainerData;
 import xyz.l7ssha.lushatest.core.LushaComponentTickerBlockEntity;
 import xyz.l7ssha.lushatest.recipe.TestTileEntityRecipe;
 import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
 
-public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEntity> {
+public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEntity> implements MenuProvider, IActivableBlockEntity {
     public final static int ENERGY_STORAGE_MAX = 2_147_483_647; // Integer.MAX_VALUE;
     public final static int ENERGY_STORAGE_REQUIRED_TO_RUN = (int) (ENERGY_STORAGE_MAX * 0.75); // Integer.MAX_VALUE;
     private boolean activeState = false;
@@ -45,12 +52,17 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
         this.setChanged();
     }
 
+    @Override
+    public boolean getActiveState() {
+        return this.activeState;
+    }
+
     public IEnergyStorage getEnergyStorage() {
-        return this.getRawComponent(CapabilityEnergy.ENERGY).orElseThrow().getComponent();
+        return this.getRawComponent(ForgeCapabilities.ENERGY).orElseThrow().getComponent();
     }
 
     public IItemHandler getStackHandler() {
-        return this.getRawComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow().getComponent();
+        return this.getRawComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow().getComponent();
     }
 
     @Override
@@ -65,7 +77,7 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
     }
 
     protected void processMachine() {
-        final var storageComponent = this.<StorageCapabilityComponent>getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow();
+        final var storageComponent = this.<StorageCapabilityComponent>getComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow();
 
         final var container = storageComponent.getAsSimpleContainer();
 
@@ -105,7 +117,7 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
             return 0;
         }
 
-        final var storageComponent = this.<StorageCapabilityComponent>getComponent(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow();
+        final var storageComponent = this.<StorageCapabilityComponent>getComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow();
         final var container = storageComponent.getAsSimpleContainer();
 
         if (container.getItem(1).getCount() < this.getStackHandler().getSlotLimit(1)) {
@@ -124,5 +136,22 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
 
         final var calculatedPercentage = (int) ((double) currentEnergy / (double) recipe.get().getRecipeCost() * 100);
         return Math.min(100, calculatedPercentage);
+    }
+
+    @Override
+    public @NotNull Component getDisplayName() {
+        return Component.translatable("lushatest.blockduplicator");
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
+        return new TestBlockContainerMenu(
+                id,
+                inventory,
+                this.getStackHandler(),
+                this,
+                new TestBlockContainerData(this)
+        );
     }
 }

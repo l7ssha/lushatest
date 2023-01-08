@@ -3,11 +3,11 @@ package xyz.l7ssha.lushatest.screen.widget;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import xyz.l7ssha.lushatest.component.storage.InventoryConfigMode;
 import xyz.l7ssha.lushatest.network.LushaNetworkChannel;
-import xyz.l7ssha.lushatest.network.packet.server.LushaTileEntityInventorySideUpdateConfigPacket;
+import xyz.l7ssha.lushatest.network.packet.server.LushaTileEntityInvetorySideConfigServerSyncPacket;
 
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class InventorySidedConfigWidget extends LushaGuiWidget {
 
         this.inventoryConfig.put(inventoryButton.direction, nextMode);
 
-        LushaNetworkChannel.sendToServer(new LushaTileEntityInventorySideUpdateConfigPacket(inventoryButton.getDirection(), nextMode));
+        LushaNetworkChannel.sendToServer(new LushaTileEntityInvetorySideConfigServerSyncPacket(inventoryButton.getDirection(), nextMode));
 
         this.logger.debug("Button clicked for side: %s".formatted(inventoryButton.getDirection().getName()));
     }
@@ -47,7 +47,7 @@ public class InventorySidedConfigWidget extends LushaGuiWidget {
         private final String tooltip;
 
         public InventoryConfigButton(int posX, int posY, String tooltip, Direction direction) {
-            super(posX, posY, BUTTON_SIZE, BUTTON_SIZE, new TextComponent(InventorySidedConfigWidget.this.inventoryConfig.getOrDefault(direction, InventoryConfigMode.NONE).getShortLabel()), InventorySidedConfigWidget.this::onButtonClick);
+            super(posX, posY, BUTTON_SIZE, BUTTON_SIZE, Component.literal(InventorySidedConfigWidget.this.inventoryConfig.getOrDefault(direction, InventoryConfigMode.NONE).getShortLabel()), InventorySidedConfigWidget.this::onButtonClick);
 
             this.tooltip = tooltip;
             this.direction = direction;
