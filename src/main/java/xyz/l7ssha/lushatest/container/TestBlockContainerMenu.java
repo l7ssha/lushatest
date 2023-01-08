@@ -8,7 +8,9 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
@@ -23,9 +25,12 @@ import xyz.l7ssha.lushatest.registration.BlockRegistry;
 import xyz.l7ssha.lushatest.registration.ContainerRegistry;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 
+import java.util.List;
 import java.util.Map;
 
 public class TestBlockContainerMenu extends LushaTestContainerMenu {
+    private static List<Item> ALLOWED_RECIPE_ITEMS;
+
     private final ContainerLevelAccess containerLevelAccess;
     private final ContainerData containerData;
     private final BlockEntity blockEntity;
@@ -40,15 +45,7 @@ public class TestBlockContainerMenu extends LushaTestContainerMenu {
         this.containerData = containerData;
         this.blockEntity = blockEntity;
 
-        final var allowedItems = playerInv.player.getLevel()
-                .getRecipeManager()
-                .getAllRecipesFor(TestTileEntityRecipe.Type.INSTANCE)
-                .stream()
-                .parallel()
-                .map(recipe -> recipe.getInputItem().getItems()[0].getItem())
-                .toList();
-
-        addSlot(new ItemRestrictedSlot(slots, 0, 26, 36, allowedItems));
+        addSlot(new ItemRestrictedSlot(slots, 0, 26, 36, getAllowedRecipeItems(playerInv.player.getLevel())));
         addSlot(new ReadonlySlot(slots, 1, 98, 36));
 
         addPlayerInv(playerInv);
@@ -79,5 +76,18 @@ public class TestBlockContainerMenu extends LushaTestContainerMenu {
     @Override
     public boolean stillValid(@NotNull Player player) {
         return stillValid(this.containerLevelAccess, player, BlockRegistry.TEST_BLOCK.get());
+    }
+
+    private static List<Item> getAllowedRecipeItems(Level level) {
+        if (ALLOWED_RECIPE_ITEMS == null) {
+            ALLOWED_RECIPE_ITEMS = level.getRecipeManager()
+                    .getAllRecipesFor(TestTileEntityRecipe.Type.INSTANCE)
+                    .stream()
+                    .parallel()
+                    .map(recipe -> recipe.getInputItem().getItems()[0].getItem())
+                    .toList();
+        }
+
+        return ALLOWED_RECIPE_ITEMS;
     }
 }
