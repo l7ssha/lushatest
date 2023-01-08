@@ -30,7 +30,7 @@ public class TestBlockContainerScreen extends LushaContainerScreen<TestBlockCont
             this.renderTooltip(stack, Component.literal(storedEnergyText), mouseX + 5, mouseY + 5);
         }
 
-        this.addRenderableWidget(new InventorySidedConfigWidget(this.leftPos, this.topPos, this.menu.getInventoryConfig()));
+        this.addRenderableWidget(new InventorySidedConfigWidget(this.leftPos, this.topPos, this.menu.getInventoryConfig()).init());
     }
 
     @Override
