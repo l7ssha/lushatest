@@ -15,10 +15,11 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.l7ssha.lushatest.component.AccessModeConfig;
+import xyz.l7ssha.lushatest.component.configuration.AccessModeConfig;
+import xyz.l7ssha.lushatest.component.configuration.side.SideAccessConfigurationBuilder;
+import xyz.l7ssha.lushatest.component.configuration.slot.SlotsConfigurationBuilder;
 import xyz.l7ssha.lushatest.component.energy.EnergyCapabilityComponent;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
-import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
 import xyz.l7ssha.lushatest.container.TestBlockContainerMenu;
 import xyz.l7ssha.lushatest.container.data.TestBlockContainerData;
 import xyz.l7ssha.lushatest.core.LushaComponentTickerBlockEntity;
@@ -36,11 +37,12 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
         this.addComponent(new EnergyCapabilityComponent<TestTileEntity>(ENERGY_STORAGE_MAX));
         this.addComponent(
                 new StorageCapabilityComponent(
-                        new StorageComponentStackHandlerBuilder()
+                        new SlotsConfigurationBuilder()
                                 .setSize(2)
-                                .addSlotConfig(0, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(1, AccessModeConfig.NONE))
-                                .addSlotConfig(1, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(64, AccessModeConfig.OUTPUT))
-                                .setCommonSideConfig(new StorageComponentStackHandlerBuilder.SideConfigBuilder())
+                                .addSlotConfiguration(0, new SlotsConfigurationBuilder.SlotAccessConfigurationBuilder(1, AccessModeConfig.NONE))
+                                .addSlotConfiguration(0, new SlotsConfigurationBuilder.SlotAccessConfigurationBuilder(64, AccessModeConfig.OUTPUT))
+                                .build(),
+                        new SideAccessConfigurationBuilder().setCommonSideConfig(new SideAccessConfigurationBuilder.DirectionAccessConfigurationBuilder(AccessModeConfig.NONE))
                                 .build(),
                         this
                 )

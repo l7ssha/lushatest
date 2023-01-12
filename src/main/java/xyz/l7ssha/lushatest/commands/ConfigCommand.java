@@ -11,9 +11,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.Nullable;
 import xyz.l7ssha.lushatest.commands.argument.InventorySlotModeArgument;
-import xyz.l7ssha.lushatest.component.AccessModeConfig;
+import xyz.l7ssha.lushatest.component.configuration.AccessModeConfig;
+import xyz.l7ssha.lushatest.component.configuration.side.DirectionAccessConfiguration;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
-import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
 import xyz.l7ssha.lushatest.core.LushaComponentBlockEntity;
 import xyz.l7ssha.lushatest.tileentities.IActivableBlockEntity;
 import xyz.l7ssha.lushatest.utils.RayTraceUtils;
@@ -69,13 +69,7 @@ public class ConfigCommand {
         }
 
         var modeLabel = context.getArgument("mode", String.class);
-
-        final var stackHandlerProvider = itemHandlerComponent.get().getStackHandlerProvider();
-
-        final var configurationBuilder = StorageComponentStackHandlerBuilder.fromConfig(stackHandlerProvider.getStackHandlerConfiguration());
-        configurationBuilder.addSideConfig(locateResult.blockHitResult.getDirection(), new StorageComponentStackHandlerBuilder.SideConfigBuilder(AccessModeConfig.fromLabel(modeLabel)));
-
-        stackHandlerProvider.setStackHandlerConfiguration(configurationBuilder.build());
+        itemHandlerComponent.orElseThrow().getSideConfiguration().getSideConfiguration().put(locateResult.blockHitResult.getDirection(), new DirectionAccessConfiguration(AccessModeConfig.fromLabel(modeLabel)));
 
         context.getSource().sendSuccess(Component.literal("Block pos: (%s, %s, %s); Provided mode: %s".formatted(locateResult.blockHitResult.getBlockPos().getX(), locateResult.blockHitResult.getBlockPos().getY(), locateResult.blockHitResult.getBlockPos().getZ(), modeLabel)), true);
         return 1;

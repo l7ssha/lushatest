@@ -8,8 +8,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-import xyz.l7ssha.lushatest.component.AccessModeConfig;
-import xyz.l7ssha.lushatest.component.storage.StackHandlerConfiguration;
+import xyz.l7ssha.lushatest.component.configuration.AccessModeConfig;
+import xyz.l7ssha.lushatest.component.configuration.side.DirectionAccessConfiguration;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 
@@ -47,9 +47,9 @@ public class LushaTileEntityInventorySideConfigClientSyncPacket {
 
         context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             if (Minecraft.getInstance().level.getBlockEntity(packet.blockPos) instanceof TestTileEntity entity) {
-                final var configuration = entity.<StorageCapabilityComponent>getComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow().getStackHandlerProvider().getStackHandlerConfiguration();
+                final var configuration = entity.<StorageCapabilityComponent>getComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow();
 
-                configuration.getSideConfiguration().put(packet.direction, new StackHandlerConfiguration.SideConfiguration(packet.mode));
+                configuration.getSideConfiguration().getSideConfiguration().put(packet.direction, new DirectionAccessConfiguration(packet.mode));
             }
 
             context.setPacketHandled(true);

@@ -6,9 +6,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.network.NetworkEvent;
 import org.slf4j.Logger;
-import xyz.l7ssha.lushatest.component.AccessModeConfig;
+import xyz.l7ssha.lushatest.component.configuration.AccessModeConfig;
+import xyz.l7ssha.lushatest.component.configuration.side.DirectionAccessConfiguration;
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
-import xyz.l7ssha.lushatest.component.storage.StorageComponentStackHandlerBuilder;
 import xyz.l7ssha.lushatest.container.TestBlockContainerMenu;
 import xyz.l7ssha.lushatest.network.LushaNetworkChannel;
 import xyz.l7ssha.lushatest.network.packet.client.LushaTileEntityInventorySideConfigClientSyncPacket;
@@ -53,11 +53,7 @@ public class LushaTileEntityInvetorySideConfigServerSyncPacket {
             final var storageComponent = tileEntity.<StorageCapabilityComponent>getComponent(ForgeCapabilities.ITEM_HANDLER)
                     .orElseThrow(() -> new RuntimeException("Missing item handler component"));
 
-            storageComponent.getStackHandlerProvider().setStackHandlerConfiguration(
-                    StorageComponentStackHandlerBuilder.fromConfig(storageComponent.getStackHandlerProvider().getStackHandlerConfiguration())
-                            .addSideConfig(packet.direction, new StorageComponentStackHandlerBuilder.SideConfigBuilder(packet.mode))
-                            .build()
-            );
+            storageComponent.getSideConfiguration().getSideConfiguration().put(packet.direction, new DirectionAccessConfiguration(packet.mode));
 
             logger.debug("Handled LushaTileEntityInventorySideUpdateConfigPacket; (direction: %s, mode: %s)".formatted(packet.direction.getName(), packet.mode.getLabel()));
             LushaNetworkChannel.sendToAllNear(tileEntity, new LushaTileEntityInventorySideConfigClientSyncPacket(packet.direction, packet.mode, blockPos));

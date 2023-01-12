@@ -1,4 +1,4 @@
-package xyz.l7ssha.lushatest.component;
+package xyz.l7ssha.lushatest.component.configuration;
 
 import java.util.Arrays;
 import java.util.List;

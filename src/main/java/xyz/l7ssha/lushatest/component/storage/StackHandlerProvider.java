@@ -7,43 +7,36 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
-import xyz.l7ssha.lushatest.component.AccessModeConfig;
+import xyz.l7ssha.lushatest.component.configuration.side.SideAccessConfiguration;
+import xyz.l7ssha.lushatest.component.configuration.slot.SlotsConfiguration;
 import xyz.l7ssha.lushatest.core.LushaTestBlockEntity;
 
 public class StackHandlerProvider<T extends LushaTestBlockEntity> {
     protected final static String INVENTORY_TAG = "inventory_capability_component_inventory";
-    protected final static String CONFIG_SIZE = "size";
     protected final static String CONFIG_SLOTS_NUMBER = "slotsNumber";
     protected final static String CONFIG_STACK_LIMIT = "stackLimit";
     protected final static String CONFIG_MODE = "mode";
     protected final static String CONFIG_SLOT_N_PATTERN = "slot[%s]";
     protected final static String CONFIG_HANDLER_CONFIGURATION_STACK = "stack_handler_configuration";
-    protected static final String CONFIG_SIDE_PATTERN = "side[%s]";
 
-    private StackHandlerConfiguration stackHandlerConfiguration;
+    private SlotsConfiguration slotsConfiguration;
+
+    private SideAccessConfiguration sideAccessConfiguration;
 
     private final ItemStackHandler stackHandler;
 
     private final T blockEntity;
 
-    public StackHandlerProvider(StackHandlerConfiguration stackHandlerConfiguration, T blockEntity) {
-        this.stackHandlerConfiguration = stackHandlerConfiguration;
+    public StackHandlerProvider(SlotsConfiguration slotsConfiguration, SideAccessConfiguration sideAccessConfiguration, T blockEntity) {
+        this.slotsConfiguration = slotsConfiguration;
+        this.sideAccessConfiguration = sideAccessConfiguration;
         this.blockEntity = blockEntity;
 
-        this.stackHandler = createMainHandler(stackHandlerConfiguration);
-    }
-
-    public StackHandlerConfiguration getStackHandlerConfiguration() {
-        return stackHandlerConfiguration;
-    }
-
-    public void setStackHandlerConfiguration(StackHandlerConfiguration stackHandlerConfiguration) {
-        this.stackHandlerConfiguration = stackHandlerConfiguration;
-        this.blockEntity.updateBlockEntity();
+        this.stackHandler = createMainHandler(slotsConfiguration);
     }
 
     public LazyOptional<IItemHandler> getHandlerForSide(Direction direction) {
-        final var wrapperHandler = new WrappedItemStackHandler(direction, this.getStackHandlerConfiguration(), this.getMainHandler());
+        final var wrapperHandler = new WrappedItemStackHandler(direction, this.slotsConfiguration, this.sideAccessConfiguration, this.getMainHandler());
 
         if (wrapperHandler.isNoneMode()) {
             return LazyOptional.empty();
@@ -52,58 +45,29 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
         return LazyOptional.of(() -> wrapperHandler).cast();
     }
 
+    public SlotsConfiguration getSlotsConfiguration() {
+        return slotsConfiguration;
+    }
+
+    public SideAccessConfiguration getSideAccessConfiguration() {
+        return sideAccessConfiguration;
+    }
+
     void saveAdditional(CompoundTag tag) {
         final var configurationTag = new CompoundTag();
-        configurationTag.putInt(CONFIG_SIZE, this.getStackHandlerConfiguration().getSize());
-        configurationTag.putInt(CONFIG_SLOTS_NUMBER, this.getStackHandlerConfiguration().getSideConfiguration().size());
 
-        for (final var slotConfig : this.getStackHandlerConfiguration().getSlotConfiguration().entrySet()) {
-            final var slotConfigTag = new CompoundTag();
-
-            slotConfigTag.putInt(CONFIG_STACK_LIMIT, slotConfig.getValue().getSlotLimit());
-            slotConfigTag.putInt(CONFIG_MODE, slotConfig.getValue().getMode().getIndex());
-
-            configurationTag.put(CONFIG_SLOT_N_PATTERN.formatted(slotConfig.getKey()), slotConfigTag);
-        }
-
-        for (final var sideConfig : this.getStackHandlerConfiguration().getSideConfiguration().entrySet()) {
-            final var sideConfigTag = new CompoundTag();
-
-            sideConfigTag.putInt(CONFIG_MODE, sideConfig.getValue().getMode().getIndex());
-            configurationTag.put(CONFIG_SIDE_PATTERN.formatted(sideConfig.getKey().getName()), sideConfigTag);
-        }
+        configurationTag.merge(this.slotsConfiguration.save());
+        configurationTag.merge(this.sideAccessConfiguration.save());
 
         tag.put(CONFIG_HANDLER_CONFIGURATION_STACK, configurationTag);
-
         tag.put(INVENTORY_TAG, getMainHandler().serializeNBT());
     }
 
     void load(CompoundTag tag) {
         final var configurationTag = tag.getCompound(CONFIG_HANDLER_CONFIGURATION_STACK);
 
-        final var configBuilder = new StorageComponentStackHandlerBuilder();
-        configBuilder.setSize(configurationTag.getInt(CONFIG_SIZE));
-
-        final var slotsNumber = configurationTag.getInt(CONFIG_SLOTS_NUMBER);
-
-        for (var i = 0; i < slotsNumber; i++) {
-            final var slotTag = configurationTag.getCompound(CONFIG_SLOT_N_PATTERN.formatted(i));
-
-            configBuilder.addSlotConfig(i, new StorageComponentStackHandlerBuilder.SlotConfigBuilder(
-                    slotTag.getInt(CONFIG_STACK_LIMIT),
-                    AccessModeConfig.fromIndex(slotTag.getInt(CONFIG_MODE))
-            ));
-        }
-
-        for (final var side : Direction.values()) {
-            final var sideTag = configurationTag.getCompound(CONFIG_SIDE_PATTERN.formatted(side.getName()));
-
-            configBuilder.addSideConfig(side, new StorageComponentStackHandlerBuilder.SideConfigBuilder(
-                    AccessModeConfig.fromIndex(sideTag.getInt(CONFIG_MODE))
-            ));
-        }
-
-        this.setStackHandlerConfiguration(configBuilder.build());
+        this.slotsConfiguration = new SlotsConfiguration(configurationTag);
+        this.sideAccessConfiguration = new SideAccessConfiguration(configurationTag);
 
         this.getMainHandler().deserializeNBT(tag.getCompound(INVENTORY_TAG));
     }
@@ -112,7 +76,7 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
         return this.stackHandler;
     }
 
-    protected ItemStackHandler createMainHandler(StackHandlerConfiguration configuration) {
+    protected ItemStackHandler createMainHandler(SlotsConfiguration configuration) {
         return new ItemStackHandler(configuration.getSize()) {
             @NotNull
             @Override
@@ -143,7 +107,7 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
 
             @Override
             protected int getStackLimit(int slot, @NotNull ItemStack stack) {
-                final var slotConfiguration = configuration.getSlotConfiguration().get(slot);
+                final var slotConfiguration = configuration.getSlotAccessConfiguration(slot);
                 if (slotConfiguration == null) {
                     return stack.getMaxStackSize();
                 }
