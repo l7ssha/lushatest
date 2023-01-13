@@ -4,7 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
-import xyz.l7ssha.lushatest.component.AccessModeConfig;
+import xyz.l7ssha.lushatest.component.configuration.AccessModeConfig;
 import xyz.l7ssha.lushatest.network.LushaNetworkChannel;
 import xyz.l7ssha.lushatest.network.packet.server.LushaTileEntityInvetorySideConfigServerSyncPacket;
 

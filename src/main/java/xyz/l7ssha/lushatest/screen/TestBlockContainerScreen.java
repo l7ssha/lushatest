@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import xyz.l7ssha.lushatest.LushaTestMod;
 import xyz.l7ssha.lushatest.container.TestBlockContainerMenu;
-import xyz.l7ssha.lushatest.screen.widget.InventorySidedConfigWidget;
+import xyz.l7ssha.lushatest.screen.widget.PanelWidget;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 import xyz.l7ssha.lushatest.utils.Utils;
 
@@ -30,7 +30,7 @@ public class TestBlockContainerScreen extends LushaContainerScreen<TestBlockCont
             this.renderTooltip(stack, Component.literal(storedEnergyText), mouseX + 5, mouseY + 5);
         }
 
-        this.addRenderableWidget(new InventorySidedConfigWidget(this.leftPos, this.topPos, this.menu.getInventoryConfig()).init());
+        this.addRenderableWidget(new PanelWidget(this.leftPos, this.topPos, this.menu));
     }
 
     @Override

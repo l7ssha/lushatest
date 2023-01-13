@@ -1,7 +1,6 @@
 package xyz.l7ssha.lushatest.screen.widget;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -51,7 +50,7 @@ abstract public class SidedConfigWidget extends LushaGuiWidget {
 
         @Override
         public void renderToolTip(@NotNull PoseStack poseStack, int mouseX, int mouseY) {
-            Minecraft.getInstance().font.draw(poseStack, Component.literal(this.tooltip), (float) mouseX, (float) mouseY, 0);
+//            Minecraft.getInstance().font.draw(poseStack, Component.literal(this.tooltip), (float) mouseX, (float) mouseY, 0);
         }
 
         public Direction getDirection() {
