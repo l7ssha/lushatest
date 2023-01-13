@@ -4,6 +4,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import xyz.l7ssha.lushatest.component.ICompoundTaggable;
 import xyz.l7ssha.lushatest.component.configuration.AccessModeConfig;
+import xyz.l7ssha.lushatest.core.LushaTestBlockEntity;
+import xyz.l7ssha.lushatest.utils.TileEntityUpdatetableMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +16,13 @@ public class SideAccessConfiguration implements ICompoundTaggable {
 
     private final Map<Direction, DirectionAccessConfiguration> sideConfiguration;
 
-    public SideAccessConfiguration(Map<Direction, DirectionAccessConfiguration> sideConfiguration) {
-        this.sideConfiguration = sideConfiguration;
+    public SideAccessConfiguration(Map<Direction, DirectionAccessConfiguration> sideConfiguration, LushaTestBlockEntity blockEntity) {
+        this.sideConfiguration = new TileEntityUpdatetableMap<>(blockEntity);
+        this.sideConfiguration.putAll(sideConfiguration);
     }
 
-    public SideAccessConfiguration(CompoundTag tag) {
-        this(new HashMap<>());
+    public SideAccessConfiguration(CompoundTag tag, LushaTestBlockEntity blockEntity) {
+        this(new HashMap<>(), blockEntity);
 
         load(tag);
     }

@@ -1,13 +1,12 @@
 package xyz.l7ssha.lushatest.component.configuration.slot;
 
 import xyz.l7ssha.lushatest.component.configuration.AccessModeConfig;
-import xyz.l7ssha.lushatest.utils.IBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SlotsConfigurationBuilder implements IBuilder<SlotsConfiguration> {
+public class SlotsConfigurationBuilder {
     private final Map<Integer, SlotAccessConfigurationBuilder> slotAccessConfiguration;
 
     private int size;
@@ -33,7 +32,6 @@ public class SlotsConfigurationBuilder implements IBuilder<SlotsConfiguration> {
         return this;
     }
 
-    @Override
     public SlotsConfiguration build() {
         return new SlotsConfiguration(
                 size,
@@ -41,7 +39,7 @@ public class SlotsConfigurationBuilder implements IBuilder<SlotsConfiguration> {
         );
     }
 
-    public static class SlotAccessConfigurationBuilder implements IBuilder<SlotAccessConfiguration> {
+    public static class SlotAccessConfigurationBuilder {
         private final int slotLimit;
         private final AccessModeConfig mode;
 
@@ -50,7 +48,6 @@ public class SlotsConfigurationBuilder implements IBuilder<SlotsConfiguration> {
             this.mode = mode;
         }
 
-        @Override
         public SlotAccessConfiguration build() {
             return new SlotAccessConfiguration(slotLimit, mode);
         }

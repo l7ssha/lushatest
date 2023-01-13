@@ -63,11 +63,11 @@ public class StackHandlerProvider<T extends LushaTestBlockEntity> {
         tag.put(INVENTORY_TAG, getMainHandler().serializeNBT());
     }
 
-    void load(CompoundTag tag) {
+    void load(CompoundTag tag, LushaTestBlockEntity blockEntity) {
         final var configurationTag = tag.getCompound(CONFIG_HANDLER_CONFIGURATION_STACK);
 
         this.slotsConfiguration = new SlotsConfiguration(configurationTag);
-        this.sideAccessConfiguration = new SideAccessConfiguration(configurationTag);
+        this.sideAccessConfiguration = new SideAccessConfiguration(configurationTag, blockEntity);
 
         this.getMainHandler().deserializeNBT(tag.getCompound(INVENTORY_TAG));
     }

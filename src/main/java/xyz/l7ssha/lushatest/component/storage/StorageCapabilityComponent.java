@@ -74,7 +74,7 @@ public class StorageCapabilityComponent implements ICapabilityComponent<IItemHan
 
     @Override
     public void load(@NotNull CompoundTag tag) {
-        this.getStackHandlerProvider().load(tag);
+        this.getStackHandlerProvider().load(tag, this.tileEntity);
     }
 
     @Override

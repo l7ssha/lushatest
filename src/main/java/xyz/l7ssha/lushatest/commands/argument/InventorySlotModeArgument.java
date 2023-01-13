@@ -9,12 +9,13 @@ import xyz.l7ssha.lushatest.component.configuration.AccessModeConfig;
 
 import java.util.concurrent.CompletableFuture;
 
-public class InventorySlotModeArgument implements ArgumentType<String> {
+public class InventorySlotModeArgument implements ArgumentType<AccessModeConfig> {
     @Override
-    public String parse(StringReader reader) {
+    public AccessModeConfig parse(StringReader reader) {
         final var text = reader.getRemaining();
         reader.setCursor(reader.getTotalLength());
-        return text;
+
+        return AccessModeConfig.fromLabel(text);
     }
 
     @Override

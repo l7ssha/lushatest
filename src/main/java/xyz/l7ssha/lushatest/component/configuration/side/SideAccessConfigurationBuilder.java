@@ -2,24 +2,25 @@ package xyz.l7ssha.lushatest.component.configuration.side;
 
 import net.minecraft.core.Direction;
 import xyz.l7ssha.lushatest.component.configuration.AccessModeConfig;
-import xyz.l7ssha.lushatest.utils.IBuilder;
+import xyz.l7ssha.lushatest.core.LushaTestBlockEntity;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SideAccessConfigurationBuilder implements IBuilder<SideAccessConfiguration> {
+public class SideAccessConfigurationBuilder {
     private final Map<Direction, DirectionAccessConfigurationBuilder> sideConfiguration;
 
     public SideAccessConfigurationBuilder() {
         this.sideConfiguration = new HashMap<>();
     }
 
-    public SideAccessConfiguration build() {
+    public SideAccessConfiguration build(LushaTestBlockEntity blockEntity) {
         return new SideAccessConfiguration(
                 sideConfiguration.entrySet().stream().collect(
                         Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().build())
-                )
+                ),
+                blockEntity
         );
     }
 
@@ -37,14 +38,13 @@ public class SideAccessConfigurationBuilder implements IBuilder<SideAccessConfig
         return this;
     }
 
-    public static class DirectionAccessConfigurationBuilder implements IBuilder<DirectionAccessConfiguration> {
+    public static class DirectionAccessConfigurationBuilder {
         private final AccessModeConfig mode;
 
         public DirectionAccessConfigurationBuilder(AccessModeConfig mode) {
             this.mode = mode;
         }
 
-        @Override
         public DirectionAccessConfiguration build() {
             return new DirectionAccessConfiguration(this.mode);
         }

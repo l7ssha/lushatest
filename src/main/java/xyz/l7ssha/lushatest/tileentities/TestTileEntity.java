@@ -34,7 +34,13 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
     public TestTileEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.TEST_BLOCK_ENTITY.get(), pos, state);
 
-        this.addComponent(new EnergyCapabilityComponent<TestTileEntity>(ENERGY_STORAGE_MAX));
+        this.addComponent(
+                new EnergyCapabilityComponent<TestTileEntity>(
+                        ENERGY_STORAGE_MAX,
+                        new SideAccessConfigurationBuilder().setCommonSideConfig(new SideAccessConfigurationBuilder.DirectionAccessConfigurationBuilder(AccessModeConfig.INPUT))
+                                .build(this)
+                )
+        );
         this.addComponent(
                 new StorageCapabilityComponent(
                         new SlotsConfigurationBuilder()
@@ -43,7 +49,7 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
                                 .addSlotConfiguration(0, new SlotsConfigurationBuilder.SlotAccessConfigurationBuilder(64, AccessModeConfig.OUTPUT))
                                 .build(),
                         new SideAccessConfigurationBuilder().setCommonSideConfig(new SideAccessConfigurationBuilder.DirectionAccessConfigurationBuilder(AccessModeConfig.NONE))
-                                .build(),
+                                .build(this),
                         this
                 )
         );
