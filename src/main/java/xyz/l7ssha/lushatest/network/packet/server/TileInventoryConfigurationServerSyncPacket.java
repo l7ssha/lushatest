@@ -11,18 +11,18 @@ import xyz.l7ssha.lushatest.component.configuration.side.DirectionAccessConfigur
 import xyz.l7ssha.lushatest.component.storage.StorageCapabilityComponent;
 import xyz.l7ssha.lushatest.container.TestBlockContainerMenu;
 import xyz.l7ssha.lushatest.network.LushaNetworkChannel;
-import xyz.l7ssha.lushatest.network.packet.client.LushaTileEntityInventorySideConfigClientSyncPacket;
+import xyz.l7ssha.lushatest.network.packet.client.TileInventoryConfigurationClientSyncPacket;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 
 import java.util.function.Supplier;
 
-public class LushaTileEntityInvetorySideConfigServerSyncPacket {
+public class TileInventoryConfigurationServerSyncPacket {
     private final Direction direction;
     private final AccessModeConfig mode;
 
     private final static Logger logger = LogUtils.getLogger();
 
-    public LushaTileEntityInvetorySideConfigServerSyncPacket(Direction direction, AccessModeConfig mode) {
+    public TileInventoryConfigurationServerSyncPacket(Direction direction, AccessModeConfig mode) {
         this.direction = direction;
         this.mode = mode;
     }
@@ -32,14 +32,14 @@ public class LushaTileEntityInvetorySideConfigServerSyncPacket {
         buf.writeInt(this.mode.getIndex());
     }
 
-    public static LushaTileEntityInvetorySideConfigServerSyncPacket fromBytes(FriendlyByteBuf buf) {
+    public static TileInventoryConfigurationServerSyncPacket fromBytes(FriendlyByteBuf buf) {
         final var direction = Direction.byName(buf.readUtf());
         final var mode = AccessModeConfig.fromIndex(buf.readInt());
 
-        return new LushaTileEntityInvetorySideConfigServerSyncPacket(direction, mode);
+        return new TileInventoryConfigurationServerSyncPacket(direction, mode);
     }
 
-    public static void handle(LushaTileEntityInvetorySideConfigServerSyncPacket packet, Supplier<NetworkEvent.Context> supplier) {
+    public static void handle(TileInventoryConfigurationServerSyncPacket packet, Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
 
         context.enqueueWork(() -> {
@@ -56,7 +56,7 @@ public class LushaTileEntityInvetorySideConfigServerSyncPacket {
             storageComponent.getSideConfiguration().getSideConfiguration().put(packet.direction, new DirectionAccessConfiguration(packet.mode));
 
             logger.debug("Handled LushaTileEntityInventorySideUpdateConfigPacket; (direction: %s, mode: %s)".formatted(packet.direction.getName(), packet.mode.getLabel()));
-            LushaNetworkChannel.sendToAllNear(tileEntity, new LushaTileEntityInventorySideConfigClientSyncPacket(packet.direction, packet.mode, blockPos));
+            LushaNetworkChannel.sendToAllNear(tileEntity, new TileInventoryConfigurationClientSyncPacket(packet.direction, packet.mode, blockPos));
 
             context.setPacketHandled(true);
         });

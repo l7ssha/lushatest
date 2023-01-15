@@ -45,9 +45,6 @@ public class ConfigCommand {
         );
 
         dispatcher.register(Commands.literal("lushatest").then(configCommand));
-//        dispatcher.register(inventoryConfig);
-//        dispatcher.register(energyConfig);
-//        dispatcher.register(activeConfigCommand);
     }
 
     private static int energyConfig(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {

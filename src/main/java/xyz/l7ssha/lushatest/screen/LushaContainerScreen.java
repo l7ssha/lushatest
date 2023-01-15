@@ -34,4 +34,9 @@ public abstract class LushaContainerScreen<T extends AbstractContainerMenu> exte
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, textureLocation);
     }
+
+    @Override
+    protected void renderTooltip(@NotNull PoseStack poseStack, int mouseX, int mouseY) {
+        super.renderTooltip(poseStack, mouseX, mouseY);
+    }
 }

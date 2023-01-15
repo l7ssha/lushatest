@@ -48,7 +48,7 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
                                 .addSlotConfiguration(0, new SlotsConfigurationBuilder.SlotAccessConfigurationBuilder(1, AccessModeConfig.NONE))
                                 .addSlotConfiguration(0, new SlotsConfigurationBuilder.SlotAccessConfigurationBuilder(64, AccessModeConfig.OUTPUT))
                                 .build(),
-                        new SideAccessConfigurationBuilder().setCommonSideConfig(new SideAccessConfigurationBuilder.DirectionAccessConfigurationBuilder(AccessModeConfig.NONE))
+                        new SideAccessConfigurationBuilder().setCommonSideConfig(new SideAccessConfigurationBuilder.DirectionAccessConfigurationBuilder(AccessModeConfig.OUTPUT))
                                 .build(this),
                         this
                 )

@@ -15,14 +15,14 @@ import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 
 import java.util.function.Supplier;
 
-public class LushaTileEntityInventorySideConfigClientSyncPacket {
+public class TileInventoryConfigurationClientSyncPacket {
     private final Direction direction;
 
     private final AccessModeConfig mode;
 
     private final BlockPos blockPos;
 
-    public LushaTileEntityInventorySideConfigClientSyncPacket(Direction direction, AccessModeConfig mode, BlockPos blockPos) {
+    public TileInventoryConfigurationClientSyncPacket(Direction direction, AccessModeConfig mode, BlockPos blockPos) {
         this.direction = direction;
         this.mode = mode;
         this.blockPos = blockPos;
@@ -34,15 +34,15 @@ public class LushaTileEntityInventorySideConfigClientSyncPacket {
         buf.writeBlockPos(this.blockPos);
     }
 
-    public static LushaTileEntityInventorySideConfigClientSyncPacket fromBytes(FriendlyByteBuf buf) {
+    public static TileInventoryConfigurationClientSyncPacket fromBytes(FriendlyByteBuf buf) {
         final var direction = Direction.byName(buf.readUtf());
         final var mode = AccessModeConfig.fromIndex(buf.readInt());
         final var blockPos = buf.readBlockPos();
 
-        return new LushaTileEntityInventorySideConfigClientSyncPacket(direction, mode, blockPos);
+        return new TileInventoryConfigurationClientSyncPacket(direction, mode, blockPos);
     }
 
-    public static void handle(LushaTileEntityInventorySideConfigClientSyncPacket packet, Supplier<NetworkEvent.Context> supplier) {
+    public static void handle(TileInventoryConfigurationClientSyncPacket packet, Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
 
         context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {

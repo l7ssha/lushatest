@@ -8,12 +8,23 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import org.jetbrains.annotations.NotNull;
+import xyz.l7ssha.lushatest.screen.LushaContainerScreen;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class LushaGuiWidget extends GuiComponent implements Widget, GuiEventListener, NarratableEntry {
     protected final List<Widget> children = new ArrayList<>();
+
+    protected final LushaContainerScreen<?> screen;
+    protected final int x;
+    protected final int y;
+
+    public LushaGuiWidget(int x, int y, LushaContainerScreen<?> screen) {
+        this.x = x;
+        this.y = y;
+        this.screen = screen;
+    }
 
     @Override
     public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float tick) {

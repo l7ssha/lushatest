@@ -7,7 +7,8 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import xyz.l7ssha.lushatest.LushaTestMod;
 import xyz.l7ssha.lushatest.container.TestBlockContainerMenu;
-import xyz.l7ssha.lushatest.screen.widget.ConfigurationWidget;
+import xyz.l7ssha.lushatest.screen.widget.config.EnergyConfigurationPanel;
+import xyz.l7ssha.lushatest.screen.widget.config.StorageConfigurationPanel;
 import xyz.l7ssha.lushatest.tileentities.TestTileEntity;
 import xyz.l7ssha.lushatest.utils.Utils;
 
@@ -22,15 +23,16 @@ public class TestBlockContainerScreen extends LushaContainerScreen<TestBlockCont
 
         final var currentProgress = this.menu.getContainerData().get(1);
         if (mouseX > this.leftPos + 57 && mouseX < this.leftPos + 57 + 30 && mouseY > this.topPos + 35 && mouseY < this.topPos + 36 + 18) {
-            this.renderTooltip(stack, Component.literal(currentProgress + "%"), mouseX + 5, mouseY + 5);
+            this.renderTooltip(stack, Component.literal(currentProgress + "%"), mouseX, mouseY);
         }
 
         final var storedEnergyText = this.getStoredEnergyText();
         if (mouseX > this.leftPos + 136 && mouseX < this.leftPos + 146 + 25 && mouseY > this.topPos + 10 && mouseY < this.topPos + 36 + 36) {
-            this.renderTooltip(stack, Component.literal(storedEnergyText), mouseX + 5, mouseY + 5);
+            this.renderTooltip(stack, Component.literal(storedEnergyText), mouseX, mouseY);
         }
 
-        this.addRenderableWidget(new ConfigurationWidget(this.leftPos, this.topPos, this.menu));
+        this.addRenderableWidget(new StorageConfigurationPanel(this.leftPos, this.topPos, this, this.menu));
+        this.addRenderableWidget(new EnergyConfigurationPanel(this.leftPos, this.topPos + 60, this, this.menu));
     }
 
     @Override

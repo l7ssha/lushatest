@@ -8,8 +8,10 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import xyz.l7ssha.lushatest.LushaTestMod;
-import xyz.l7ssha.lushatest.network.packet.client.LushaTileEntityInventorySideConfigClientSyncPacket;
-import xyz.l7ssha.lushatest.network.packet.server.LushaTileEntityInvetorySideConfigServerSyncPacket;
+import xyz.l7ssha.lushatest.network.packet.client.TileEnergyConfigurationClientSyncPacket;
+import xyz.l7ssha.lushatest.network.packet.client.TileInventoryConfigurationClientSyncPacket;
+import xyz.l7ssha.lushatest.network.packet.server.TileEnergyConfigurationServerSyncPacket;
+import xyz.l7ssha.lushatest.network.packet.server.TileInventoryConfigurationServerSyncPacket;
 
 public class LushaNetworkChannel {
     private static SimpleChannel CHANNEL_INSTANCE;
@@ -28,16 +30,28 @@ public class LushaNetworkChannel {
                 .serverAcceptedVersions(s -> true)
                 .simpleChannel();
 
-        CHANNEL_INSTANCE.messageBuilder(LushaTileEntityInvetorySideConfigServerSyncPacket.class, getNewPacketId(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(LushaTileEntityInvetorySideConfigServerSyncPacket::fromBytes)
-                .encoder(LushaTileEntityInvetorySideConfigServerSyncPacket::toBytes)
-                .consumerMainThread(LushaTileEntityInvetorySideConfigServerSyncPacket::handle)
+        CHANNEL_INSTANCE.messageBuilder(TileInventoryConfigurationServerSyncPacket.class, getNewPacketId(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(TileInventoryConfigurationServerSyncPacket::fromBytes)
+                .encoder(TileInventoryConfigurationServerSyncPacket::toBytes)
+                .consumerMainThread(TileInventoryConfigurationServerSyncPacket::handle)
                 .add();
 
-        CHANNEL_INSTANCE.messageBuilder(LushaTileEntityInventorySideConfigClientSyncPacket.class, getNewPacketId(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(LushaTileEntityInventorySideConfigClientSyncPacket::fromBytes)
-                .encoder(LushaTileEntityInventorySideConfigClientSyncPacket::toBytes)
-                .consumerMainThread(LushaTileEntityInventorySideConfigClientSyncPacket::handle)
+        CHANNEL_INSTANCE.messageBuilder(TileInventoryConfigurationClientSyncPacket.class, getNewPacketId(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(TileInventoryConfigurationClientSyncPacket::fromBytes)
+                .encoder(TileInventoryConfigurationClientSyncPacket::toBytes)
+                .consumerMainThread(TileInventoryConfigurationClientSyncPacket::handle)
+                .add();
+
+        CHANNEL_INSTANCE.messageBuilder(TileEnergyConfigurationServerSyncPacket.class, getNewPacketId(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(TileEnergyConfigurationServerSyncPacket::fromBytes)
+                .encoder(TileEnergyConfigurationServerSyncPacket::toBytes)
+                .consumerMainThread(TileEnergyConfigurationServerSyncPacket::handle)
+                .add();
+
+        CHANNEL_INSTANCE.messageBuilder(TileEnergyConfigurationClientSyncPacket.class, getNewPacketId(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(TileEnergyConfigurationClientSyncPacket::fromBytes)
+                .encoder(TileEnergyConfigurationClientSyncPacket::toBytes)
+                .consumerMainThread(TileEnergyConfigurationClientSyncPacket::handle)
                 .add();
     }
 

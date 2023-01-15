@@ -62,6 +62,14 @@ public enum AccessModeConfig {
         return AccessModeConfig.fromIndex(this.index + 1);
     }
 
+    public AccessModeConfig previous() {
+        if (this == NONE) {
+            return OUTPUT;
+        }
+
+        return AccessModeConfig.fromIndex(this.index - 1);
+    }
+
     public AccessModeConfig next(List<AccessModeConfig> allowedValues) {
         if (allowedValues.isEmpty()) {
             throw new RuntimeException("allowedValues should have at least one value");
