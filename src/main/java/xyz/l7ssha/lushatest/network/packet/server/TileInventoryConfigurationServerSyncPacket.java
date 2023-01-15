@@ -56,7 +56,7 @@ public class TileInventoryConfigurationServerSyncPacket {
             storageComponent.getSideConfiguration().getSideConfiguration().put(packet.direction, new DirectionAccessConfiguration(packet.mode));
 
             logger.debug("Handled LushaTileEntityInventorySideUpdateConfigPacket; (direction: %s, mode: %s)".formatted(packet.direction.getName(), packet.mode.getLabel()));
-            LushaNetworkChannel.sendToAllNear(tileEntity, new TileInventoryConfigurationClientSyncPacket(packet.direction, packet.mode, blockPos));
+            LushaNetworkChannel.sendToAllNearInChunkRadius(tileEntity, new TileInventoryConfigurationClientSyncPacket(packet.direction, packet.mode, blockPos));
 
             context.setPacketHandled(true);
         });

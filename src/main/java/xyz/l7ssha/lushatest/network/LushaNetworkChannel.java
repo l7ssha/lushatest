@@ -1,7 +1,10 @@
 package xyz.l7ssha.lushatest.network;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
@@ -63,16 +66,20 @@ public class LushaNetworkChannel {
         CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
 
-    public static <T> void sendToAllNear(BlockEntity entity, T message) {
+    public static <T> void sendToAllNear(BlockPos blockPos, ResourceKey<Level> dimension, int radius, T message) {
         CHANNEL_INSTANCE.send(
                 PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(
-                        entity.getBlockPos().getX(),
-                        entity.getBlockPos().getY(),
-                        entity.getBlockPos().getZ(),
-                        16,
-                        entity.getLevel().dimension()
+                        blockPos.getX(),
+                        blockPos.getY(),
+                        blockPos.getZ(),
+                        radius,
+                        dimension
                 )),
                 message
         );
+    }
+
+    public static <T> void sendToAllNearInChunkRadius(BlockEntity entity, T message) {
+        sendToAllNear(entity.getBlockPos(), entity.getLevel().dimension(), 16, message);
     }
 }

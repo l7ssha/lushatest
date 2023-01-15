@@ -56,7 +56,7 @@ public class TileEnergyConfigurationServerSyncPacket {
             storageComponent.getSideAccessConfiguration().getSideConfiguration().put(packet.direction, new DirectionAccessConfiguration(packet.mode));
 
             logger.debug("Handled TileEnergyConfigurationServerSyncPacket; (direction: %s, mode: %s)".formatted(packet.direction.getName(), packet.mode.getLabel()));
-            LushaNetworkChannel.sendToAllNear(tileEntity, new TileEnergyConfigurationClientSyncPacket(packet.direction, packet.mode, blockPos));
+            LushaNetworkChannel.sendToAllNearInChunkRadius(tileEntity, new TileEnergyConfigurationClientSyncPacket(packet.direction, packet.mode, blockPos));
 
             context.setPacketHandled(true);
         });
