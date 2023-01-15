@@ -2,7 +2,7 @@ package xyz.l7ssha.lushatest.screen.widget;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -12,16 +12,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LushaGuiWidget extends GuiComponent implements Widget, GuiEventListener, NarratableEntry {
+public abstract class LushaGuiWidget extends GuiComponent implements Widget, GuiEventListener, NarratableEntry {
     protected final List<Widget> children = new ArrayList<>();
 
     @Override
     public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float tick) {
-        for (final var child: this.children) {
+        for (final var child : this.children) {
             child.render(stack, mouseX, mouseY, tick);
 
-            if (child instanceof AbstractButton button) {
-                button.renderToolTip(stack, mouseX, mouseY);
+            if (child instanceof AbstractWidget widget) {
+                widget.renderToolTip(stack, mouseX, mouseY);
             }
         }
     }

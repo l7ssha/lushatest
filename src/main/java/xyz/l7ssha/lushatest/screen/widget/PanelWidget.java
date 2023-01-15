@@ -8,19 +8,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import xyz.l7ssha.lushatest.LushaTestMod;
-import xyz.l7ssha.lushatest.container.TestBlockContainerMenu;
 
-public class PanelWidget extends LushaGuiWidget {
+public abstract class PanelWidget extends LushaGuiWidget {
     private final static ResourceLocation textureLocation = new ResourceLocation(LushaTestMod.MOD_ID, "textures/gui/container_panel.png");
 
-    private final int x;
-    private final int y;
+    protected final int x;
+    protected final int y;
+    private final Component labelComponent;
 
-    public PanelWidget(final int x, final int y, final TestBlockContainerMenu menu) {
+    public PanelWidget(final int x, final int y, Component component) {
         this.x = x;
         this.y = y;
-
-        this.children.add(new InventorySidedConfigWidget(this.x - 6, this.y + 18, menu.getInventoryConfig()).init());
+        this.labelComponent = component;
     }
 
     @Override
@@ -28,7 +27,7 @@ public class PanelWidget extends LushaGuiWidget {
         bindTexture();
         blit(stack, x - 48, y, 0, 0, 53, 76);
 
-        Minecraft.getInstance().font.draw(stack, Component.literal("IO Conf"), x - 40, y + 6, 0x0f0f0f);
+        Minecraft.getInstance().font.draw(stack, this.labelComponent, x - 40, y + 6, 0x0f0f0f);
         super.render(stack, mouseX, mouseY, tick);
     }
 
