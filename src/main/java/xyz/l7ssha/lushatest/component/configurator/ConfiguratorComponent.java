@@ -11,6 +11,9 @@ import org.jetbrains.annotations.Nullable;
 import xyz.l7ssha.lushatest.component.ICapabilityComponent;
 
 public class ConfiguratorComponent implements ICapabilityComponent<IConfigurable> {
+    public static Capability<IConfigurable> CONFIGURATOR_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
+    });
+
     private final IConfigurable configurable;
 
     public ConfiguratorComponent(IConfigurable configurable) {
@@ -19,7 +22,7 @@ public class ConfiguratorComponent implements ICapabilityComponent<IConfigurable
 
     @Override
     public Capability<IConfigurable> getType() {
-        return CapabilityManager.get(new CapabilityToken<>() {});
+        return CONFIGURATOR_CAPABILITY;
     }
 
     @Override

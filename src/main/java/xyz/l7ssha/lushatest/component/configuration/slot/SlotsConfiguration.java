@@ -12,7 +12,6 @@ public class SlotsConfiguration implements ICompoundTaggable {
     private final static String SIZE_KEY = "size";
 
     private final Map<Integer, SlotAccessConfiguration> slotAccessConfiguration;
-
     private int size;
 
     public SlotsConfiguration(int size, Map<Integer, SlotAccessConfiguration> slotAccessConfiguration) {

@@ -16,13 +16,15 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class DataGenRecipeProvider extends RecipeProvider {
+    public static Integer TICKS_PER_SECOND = 20;
+
     protected final Map<Item, Integer> testTileEntityRecipeMap = Map.ofEntries( // TODO: Better balanced recipes
-            Map.entry(Items.COAL, Integer.MAX_VALUE / 128),
-            Map.entry(Items.IRON_INGOT, Integer.MAX_VALUE / 48),
-            Map.entry(Items.GOLD_INGOT, Integer.MAX_VALUE / 32),
-            Map.entry(Items.DIAMOND, Integer.MAX_VALUE / 12),
-            Map.entry(Items.EMERALD, Integer.MAX_VALUE / 8),
-            Map.entry(Items.NETHERITE_SCRAP, Integer.MAX_VALUE / 2)
+            Map.entry(Items.COAL, 3 * TICKS_PER_SECOND),
+            Map.entry(Items.IRON_INGOT, 30 * TICKS_PER_SECOND),
+            Map.entry(Items.GOLD_INGOT, 48 * TICKS_PER_SECOND),
+            Map.entry(Items.DIAMOND, 120 * TICKS_PER_SECOND),
+            Map.entry(Items.EMERALD, 180 * TICKS_PER_SECOND),
+            Map.entry(Items.NETHERITE_SCRAP, 300 * TICKS_PER_SECOND)
     );
 
     public DataGenRecipeProvider(DataGenerator dataGenerator) {

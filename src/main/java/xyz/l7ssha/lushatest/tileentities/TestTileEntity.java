@@ -7,7 +7,6 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -28,8 +27,10 @@ import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
 
 public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEntity> implements MenuProvider, IActivableBlockEntity {
     public final static int ENERGY_STORAGE_MAX = 2_147_483_647; // Integer.MAX_VALUE;
-    public final static int ENERGY_STORAGE_REQUIRED_TO_RUN = (int) (ENERGY_STORAGE_MAX * 0.75); // Integer.MAX_VALUE;
+    public final static int ENERGY_STORAGE_REQUIRED_TO_RUN = (int) (ENERGY_STORAGE_MAX * 0.5); // Integer.MAX_VALUE;
+
     private boolean activeState = false;
+    private int currentProgress = 0;
 
     public TestTileEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.TEST_BLOCK_ENTITY.get(), pos, state);
@@ -89,37 +90,44 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
     }
 
     protected void processMachine() {
-        final var storageComponent = this.<StorageCapabilityComponent>getComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow();
+        if (!activeState) {
+            return;
+        }
 
+        final var storageComponent = this.<StorageCapabilityComponent>getComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow();
         final var container = storageComponent.getAsSimpleContainer();
+
+        if (!canProcess(container)) {
+            this.currentProgress = 0;
+            return;
+        }
 
         assert level != null;
         final var recipe = level
                 .getRecipeManager()
                 .getRecipeFor(TestTileEntityRecipe.Type.INSTANCE, container, level);
-
         if (recipe.isEmpty()) {
             return;
         }
 
-        if (!this.canProcess(recipe.get(), container)) {
+        this.getEnergyStorage().extractEnergy(ENERGY_STORAGE_MAX / 256, false);
+        if (this.currentProgress < recipe.orElseThrow().getRecipeCost()) {
+            this.currentProgress += 1;
             return;
         }
 
-        this.getEnergyStorage().extractEnergy(recipe.get().getRecipeCost(), false);
         this.getStackHandler().insertItem(1, recipe.get().getResultItem(), false);
+        this.currentProgress = 0;
     }
 
-    protected boolean canProcess(TestTileEntityRecipe recipe, SimpleContainer container) {
+    protected boolean canProcess(SimpleContainer container) {
         final var inputSlotStack = container.getItem(0);
         final var outputSlotStack = container.getItem(1);
 
         final var energyStored = this.getEnergyStorage().getEnergyStored();
 
-        return activeState
-                && energyStored > recipe.getRecipeCost()
-                && energyStored > ENERGY_STORAGE_REQUIRED_TO_RUN
-                && (inputSlotStack.getItem().equals(outputSlotStack.getItem()) || outputSlotStack.getItem().equals(Items.AIR))
+        return energyStored > ENERGY_STORAGE_REQUIRED_TO_RUN
+                && (inputSlotStack.getItem().equals(outputSlotStack.getItem()) || outputSlotStack.isEmpty())
                 && inputSlotStack.getCount() > 0
                 && outputSlotStack.getCount() < this.getStackHandler().getSlotLimit(1);
     }
@@ -132,10 +140,6 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
         final var storageComponent = this.<StorageCapabilityComponent>getComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow();
         final var container = storageComponent.getAsSimpleContainer();
 
-        if (container.getItem(1).getCount() < this.getStackHandler().getSlotLimit(1)) {
-            return 0;
-        }
-
         final var recipe = level
                 .getRecipeManager()
                 .getRecipeFor(TestTileEntityRecipe.Type.INSTANCE, container, level);
@@ -144,9 +148,7 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
             return 0;
         }
 
-        final var currentEnergy = Math.max(0, (this.getEnergyStorage().getEnergyStored() - ENERGY_STORAGE_REQUIRED_TO_RUN));
-
-        final var calculatedPercentage = (int) ((double) currentEnergy / (double) recipe.get().getRecipeCost() * 100);
+        final var calculatedPercentage = (int) ((double) currentProgress / (double) recipe.get().getRecipeCost() * 100);
         return Math.min(100, calculatedPercentage);
     }
 
