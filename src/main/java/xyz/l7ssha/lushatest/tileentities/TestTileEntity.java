@@ -1,6 +1,7 @@
 package xyz.l7ssha.lushatest.tileentities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -28,6 +29,7 @@ import xyz.l7ssha.lushatest.registration.BlockEntityRegistry;
 public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEntity> implements MenuProvider, IActivableBlockEntity {
     public final static int ENERGY_STORAGE_MAX = 2_147_483_647; // Integer.MAX_VALUE;
     public final static int ENERGY_STORAGE_REQUIRED_TO_RUN = (int) (ENERGY_STORAGE_MAX * 0.5); // Integer.MAX_VALUE;
+    private static final String CURRENT_PROGRESS_TAG = "current_progress";
 
     private boolean activeState = false;
     private int currentProgress = 0;
@@ -79,6 +81,20 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
     }
 
     @Override
+    public void load(@NotNull CompoundTag tag) {
+        super.load(tag);
+
+        this.currentProgress = tag.getInt(CURRENT_PROGRESS_TAG);
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag tag) {
+        super.saveAdditional(tag);
+
+        tag.putInt(CURRENT_PROGRESS_TAG, this.currentProgress);
+    }
+
+    @Override
     public void tick(@NotNull Level world, @NotNull BlockPos blockPos, @NotNull BlockState blockState, @NotNull TestTileEntity tile) {
         super.tick(world, blockPos, blockState, tile);
 
@@ -96,13 +112,15 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
 
         final var storageComponent = this.<StorageCapabilityComponent>getComponent(ForgeCapabilities.ITEM_HANDLER).orElseThrow();
         final var container = storageComponent.getAsSimpleContainer();
-
         if (!canProcess(container)) {
             this.currentProgress = 0;
             return;
         }
 
-        assert level != null;
+        if (this.getEnergyStorage().getEnergyStored() < ENERGY_STORAGE_REQUIRED_TO_RUN) {
+            return;
+        }
+
         final var recipe = level
                 .getRecipeManager()
                 .getRecipeFor(TestTileEntityRecipe.Type.INSTANCE, container, level);
@@ -124,10 +142,7 @@ public class TestTileEntity extends LushaComponentTickerBlockEntity<TestTileEnti
         final var inputSlotStack = container.getItem(0);
         final var outputSlotStack = container.getItem(1);
 
-        final var energyStored = this.getEnergyStorage().getEnergyStored();
-
-        return energyStored > ENERGY_STORAGE_REQUIRED_TO_RUN
-                && (inputSlotStack.getItem().equals(outputSlotStack.getItem()) || outputSlotStack.isEmpty())
+        return (inputSlotStack.getItem().equals(outputSlotStack.getItem()) || outputSlotStack.isEmpty())
                 && inputSlotStack.getCount() > 0
                 && outputSlotStack.getCount() < this.getStackHandler().getSlotLimit(1);
     }
